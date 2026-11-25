@@ -3,3 +3,4 @@ cikti/log_*.txt
 fonts/*.tgz
 fonts/fontsource-*/
 __pycache__/
+cikti/teslim/
