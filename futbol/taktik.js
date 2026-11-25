@@ -93,7 +93,7 @@ const grain = document.createElement('canvas'); grain.width = grain.height = 256
   gx.putImageData(id, 0, 0); }
 
 // ---------- arka plan: stadyum + projektörler + lens parlaması + toz ----------
-const DUST = (() => { const r = rng(11), a = []; for (let i = 0; i < 320; i++) a.push({ x: r(), y: r(), z: .3 + r() * .7, ph: r() * 6.28, sp: .004 + r() * .012 }); return a; })();
+const DUST = (() => { const r = rng(11), a = []; for (let i = 0; i < 700; i++) a.push({ x: r(), y: r(), z: .3 + r() * .7, ph: r() * 6.28, sp: .004 + r() * .012 }); return a; })();
 const SRC = () => [[-.06 * W, -.10 * H, 1, TH.beam[0]], [1.06 * W, -.10 * H, -1, TH.beam[1]]];
 function beams(T, inten) {
   const L = Math.hypot(W, H) * 1.5;
@@ -158,6 +158,40 @@ function vignette() {
   const gr = g.createRadialGradient(W / 2, H / 2, Math.min(W, H) * .35, W / 2, H / 2, Math.hypot(W, H) * .62);
   gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, `rgba(0,0,0,${TH.vig})`);
   g.fillStyle = gr; g.fillRect(0, 0, W, H);
+}
+
+
+// ---------- partiküller: bokeh diskleri + saha üstü 3D ışık zerreleri ----------
+const BOKEH = (() => { const r = rng(21), a = []; for (let i = 0; i < 38; i++) a.push({ x: r(), y: r(), r: 40 + r() * 150, ph: r() * 6.28, sp: .4 + r(), c: i % 2, fg: i < 7 }); return a; })();
+function bokeh(T, front, k = 1) {
+  g.save(); g.globalCompositeOperation = 'lighter';
+  for (const b of BOKEH) {
+    if (b.fg !== front) continue;
+    const x = (b.x + Math.sin(T * .05 * b.sp + b.ph) * .04) * W, y = ((((b.y - T * .006 * b.sp) % 1) + 1) % 1) * H * 1.2 - H * .1;
+    const r = b.r * U * (front ? 1.8 : 1), col = TH.beam[b.c], al = (front ? .035 : .06) * k * (.7 + .3 * Math.sin(T * .6 + b.ph));
+    const rg = g.createRadialGradient(x, y, 0, x, y, r);
+    rg.addColorStop(0, `rgba(${col},${al * .5})`); rg.addColorStop(.82, `rgba(${col},${al * .8})`); rg.addColorStop(.93, `rgba(${col},${al * 1.15})`); rg.addColorStop(1, `rgba(${col},0)`);
+    g.fillStyle = rg; g.beginPath(); g.arc(x, y, r, 0, 6.283); g.fill();
+  }
+  g.restore();
+}
+const MOTES = (() => { const r = rng(33), a = []; for (let i = 0; i < 420; i++) a.push({ X: (r() - .5) * 112, Y: (r() - .5) * 76, z: r(), sp: .25 + r() * .75, ph: r() * 6.28, c: r() < .5 ? 0 : 1, s: .6 + r() * 1.4 }); return a; })();
+function motes(T, a) {
+  if (a <= 0) return;
+  g.save(); g.globalCompositeOperation = 'lighter';
+  const cols = [TH.acc, TH.acc2], hs = Math.sin(CAM.tilt);
+  for (const m of MOTES) {
+    const h = ((m.z + T * .035 * m.sp) % 1);               // 0→1 yükselip başa döner
+    const zM = h * 14;                                       // metre cinsinden yükseklik
+    const X = m.X + Math.sin(T * .3 * m.sp + m.ph) * 1.2, Y = m.Y + Math.cos(T * .25 * m.sp + m.ph) * 1.2;
+    const [x, y, sc] = proj(X, Y); const yy = y - zM * CAM.k * sc * hs;
+    const tw = .55 + .45 * Math.sin(T * 3 * m.sp + m.ph * 3), fade = Math.sin(h * Math.PI);
+    const al = a * fade * tw * .5, rad = m.s * U * sc * 1.6;
+    if (al < .02) continue;
+    g.fillStyle = hexA(cols[m.c], al * .25); g.beginPath(); g.arc(x, yy, rad * 3.2, 0, 6.283); g.fill();
+    g.fillStyle = hexA(cols[m.c], al); g.beginPath(); g.arc(x, yy, rad, 0, 6.283); g.fill();
+  }
+  g.restore();
 }
 
 // ---------- tipografi ----------
@@ -310,7 +344,7 @@ function rgbOf(hex) { const n = parseInt(hex.slice(1), 16); return [n >> 16, (n 
 function shade(hex, f, a = 1) { const [r, gg, b] = rgbOf(hex); return `rgba(${r * f | 0},${gg * f | 0},${b * f | 0},${a})`; }
 function tint(hex, f, a = 1) { const [r, gg, b] = rgbOf(hex); return `rgba(${r + (255 - r) * f | 0},${gg + (255 - gg) * f | 0},${b + (255 - b) * f | 0},${a})`; }
 // 3D disk jeton: silindir gövde + parlak üst yüz + kenar ışığı + zemin yansıması
-function token(X, Y, team, num, label, sz, a, hl = 0) {
+function token(X, Y, team, num, label, sz, a, hl = 0, ls = 1) {
   if (a <= 0) return;
   const [x, y, sc] = proj(X, Y); const r = sz * U * sc;
   const ky = .12 + .88 * Math.cos(CAM.tilt);           // üst yüz basıklığı
@@ -359,13 +393,14 @@ function token(X, Y, team, num, label, sz, a, hl = 0) {
   g.restore();
   if (num != null) {
     g.save(); g.translate(x, ty); g.scale(1, ky);
-    g.fillStyle = team.c2; g.font = F(800, r * 1.0); g.textAlign = 'center'; g.textBaseline = 'middle';
+    const ns = String(num).length; g.fillStyle = team.c2; g.font = F(800, r * (ns <= 2 ? .95 : .72)); g.textAlign = 'center'; g.textBaseline = 'middle';
     g.fillText(String(num), 0, r * .06); g.restore();
   }
   if (label) {
-    g.font = F(700, 16 * U * sc, 'JetBrains Mono'); g.textBaseline = 'middle'; g.textAlign = 'center';
-    const tw = g.measureText(label).width + 14 * U * sc, ly = y + r * ky + 20 * U * sc;
-    g.fillStyle = 'rgba(4,8,14,.78)'; rrect(x - tw / 2, ly - 11 * U * sc, tw, 22 * U * sc, 11 * U * sc); g.fill();
+    const q = sc * ls; g.font = F(700, 17 * U * q, 'JetBrains Mono'); g.textBaseline = 'middle'; g.textAlign = 'center';
+    const tw = g.measureText(label).width + 16 * U * q, ly = y + r * ky + 20 * U * q;
+    g.fillStyle = 'rgba(6,3,16,.82)'; rrect(x - tw / 2, ly - 12 * U * q, tw, 24 * U * q, 12 * U * q); g.fill();
+    g.strokeStyle = hexA(team.ring, .45); g.lineWidth = 1 * U; g.stroke();
     g.fillStyle = TH.txt; g.fillText(label, x, ly + 1);
   }
   g.restore();
@@ -384,6 +419,17 @@ function arrowW(A, B, bend, col, p, dash, wpx = 4) {
     g.globalCompositeOperation = comp; g.strokeStyle = hexA(col, al); g.lineWidth = lw;
     g.beginPath(); pts.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.stroke();
   }
+  // ok çizilirken uçtan geriye saçılan kıvılcımlar
+  if (p < 1 && pts.length > 4) {
+    g.save(); g.globalCompositeOperation = 'lighter';
+    const rr = rng((A[0] * 97 + B[1] * 31) | 0);
+    for (let k = 0; k < 26; k++) {
+      const idx = Math.max(0, pts.length - 1 - Math.floor(rr() * Math.min(12, pts.length - 1))), [sx, sy] = pts[idx];
+      const age = (pts.length - 1 - idx) / 12, ang = rr() * 6.283, d = (4 + rr() * 26) * U * (.3 + age);
+      g.fillStyle = hexA(col, .9 * (1 - age)); g.beginPath(); g.arc(sx + Math.cos(ang) * d, sy + Math.sin(ang) * d, (1 + rr() * 2.2) * U * (1 - age * .6), 0, 6.283); g.fill();
+    }
+    g.restore();
+  }
   // uç: ışıklı kafa
   const [hx, hy] = pts[pts.length - 1], [qx, qy] = pts[Math.max(0, pts.length - 3)];
   const an = Math.atan2(hy - qy, hx - qx), hs = 13 * U;
@@ -392,8 +438,8 @@ function arrowW(A, B, bend, col, p, dash, wpx = 4) {
   g.lineTo(hx + Math.cos(an + 2.5) * hs, hy + Math.sin(an + 2.5) * hs); g.lineTo(hx + Math.cos(an - 2.5) * hs, hy + Math.sin(an - 2.5) * hs); g.closePath(); g.fill();
   g.restore();
 }
-function ball(X, Y, a) {
-  const [x, y, sc] = proj(X, Y); g.save(); g.globalAlpha = a; g.globalCompositeOperation = 'lighter';
+function ball(X, Y, a, sz = 1) {
+  const [x, y, sc0] = proj(X, Y), sc = sc0 * sz; g.save(); g.globalAlpha = a; g.globalCompositeOperation = 'lighter';
   const rg = g.createRadialGradient(x, y - 6 * U, 0, x, y - 6 * U, 26 * U * sc);
   rg.addColorStop(0, 'rgba(255,255,255,.95)'); rg.addColorStop(.25, 'rgba(255,250,220,.5)'); rg.addColorStop(1, 'rgba(255,250,220,0)');
   g.fillStyle = rg; g.beginPath(); g.arc(x, y - 6 * U, 26 * U * sc, 0, 6.283); g.fill(); g.restore();
@@ -494,8 +540,9 @@ SC.tactic = (c) => {
   if (press > 0) { heat(...P(.84, .5), 26, TH.acc, press * .9); heat(...P(.78, .2), 14, TH.acc, press * .5); heat(...P(.78, .8), 14, TH.acc, press * .5); }
   // rakip (soluk)
   const oa = win(lt, 1.2, 2.0) * (1 - .45 * press);
+  motes(T, a * win(lt, .6, 2.0));
   const TOK = [];   // derinlik sıralı çizim: uzak jetonlar önce
-  EP.opp.forEach(([x, y], i) => TOK.push([...P(x, y), EP.away, null, null, V ? 10 : 9, oa * .55 * cl(win(lt, 1.2 + i * .03, 1.6 + i * .03) * 2), 0]));
+  EP.opp.forEach(([x, y, nm], i) => TOK.push([...P(x, y), EP.away, null, nm || null, V ? 11 : 10, oa * .62 * cl(win(lt, 1.2 + i * .03, 1.6 + i * .03) * 2), 0, .72]));
   // ev sahibi: diziliş ve pres şekli arasında geçiş
   const home = EP.lineup.map(p => P(lerp(p.x, p.px, press), lerp(p.y, p.py, press)));
   // 1) kanat bindirmesi: bekler koşu, kanatlar içe kat
@@ -512,17 +559,21 @@ SC.tactic = (c) => {
   });
   if (k2 > 0 && press < 1) {
     const f = cl(k2 * EP.passes.length, 0, EP.passes.length - 1e-6), j = Math.floor(f), u = eIO(f - j);
-    const [i0, i1] = EP.passes[j]; ball(lerp(home[i0][0], home[i1][0], u), lerp(home[i0][1], home[i1][1], u), 1 - press);
+    for (let k = 10; k >= 0; k--) {   // ışık izi: geçmiş konumlar sönerek
+      const fk = cl(f - k * .035, 0, EP.passes.length - 1e-6), jk = Math.floor(fk), uk = eIO(fk - jk), [a0, a1] = EP.passes[jk];
+      ball(lerp(home[a0][0], home[a1][0], uk), lerp(home[a0][1], home[a1][1], uk), (1 - press) * (k ? .35 * (1 - k / 11) : 1), k ? .55 : 1);
+    }
   }
   EP.lineup.forEach((p, i) => {
     const ap = eBack(win(lt, .4 + i * .07, .9 + i * .07));
     const hl = (p.run && k1 > 0 && k1 < 1) || (EP.passes.some(q => q.includes(i)) && k2 > 0 && k2 < 1) ? .8 : press * .5;
-    TOK.push([home[i][0], home[i][1], EP.home, p.n, p.nm, (V ? 21 : 19) * cl(ap, 0, 1.2), cl(ap * 2), hl]);
+    TOK.push([home[i][0], home[i][1], EP.home, p.pos, p.nm, (V ? 22 : 20) * cl(ap, 0, 1.2), cl(ap * 2), hl, 1]);
   });
   TOK.sort((p, q) => proj(p[0], p[1])[1] - proj(q[0], q[1])[1]).forEach(t => token(...t));
   // başlık + adım etiketi
   const hy = V ? H * .14 : H * .165, hx = V ? W / 2 : 120 * U, al = V ? 'center' : 'left';
   maskText('OYUN PLANI', hx, hy, F(800, (V ? 50 : 42) * U, 'Unbounded'), '#FFFFFF', win(lt, .2, 1), al, 2 * U);
+  if (EP.lineupNote) maskText(EP.lineupNote, V ? W / 2 : hx, V ? hy + 182 * U : hy + 112 * U, F(500, 19 * U, 'JetBrains Mono'), TH.mut2, win(lt, .9, 1.7), al, 2 * U);
   maskText(sc.formation, V ? W / 2 : hx + 430 * U, V ? hy + 56 * U : hy, F(300, (V ? 40 : 42) * U, 'Unbounded'), TH.acc, win(lt, .5, 1.3), V ? 'center' : 'left');
   const ts = [t1, t2, t3], cur = ts.filter(t => T >= t - .1).length - 1;
   if (cur >= 0) {
@@ -667,12 +718,14 @@ function render(T) {
   const tac = EP.scenes.find(s => s.type === 'tactic');
   const inTac = tac ? win(T, tac.t0, tac.t0 + .6) * (1 - win(T, tac.t1, tac.t1 + .6)) : 0;
   beams(T, 1 - .35 * inTac);
+  bokeh(T, false, 1 - .4 * inTac);
   for (const sc of EP.scenes) {
     const fo = .55; if (T < sc.t0 || T > sc.t1 + fo) continue;
     const a = (sc.t0 === 0 ? 1 : eOut(win(T, sc.t0, sc.t0 + .5))) * (1 - eIO(win(T, sc.t1, sc.t1 + fo)));
     if (a <= 0) continue;
     SC[sc.type]({ T, lt: T - sc.t0, d: sc.t1 - sc.t0, a, sc });
   }
+  bokeh(T, true);
   brandBug(T, win(T, .3, 1.2) * (1 - win(T, EP.dur - .8, EP.dur)));
   bloom();
   g.save(); g.globalCompositeOperation = TH.grade[1]; g.fillStyle = TH.grade[0]; g.fillRect(0, 0, W, H); g.restore();

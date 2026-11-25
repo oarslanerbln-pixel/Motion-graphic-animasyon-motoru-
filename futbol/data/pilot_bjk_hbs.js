@@ -16,7 +16,7 @@ window.EP = {
   segs: [
     { spk: 'T', text: 'Beşiktaş yarın sahada. Ama ev sahibi olduğu hâlde İstanbul\'da değil, Batum\'da!' },
     { spk: 'A', text: 'Tarafsız saha, yirmi bin kişilik stat ve biletlerin büyük kısmı tükenmiş durumda.' },
-    { spk: 'A', text: 'Plan net: kanatlardan bindirme, ortada sabırlı pas, top kaybında beş saniye pres.' },
+    { spk: 'A', text: 'Plan net: Murillo ve Rıdvan kanatlardan bindirme, Orkun ile sabırlı pas, top kaybında beş saniye pres.' },
     { spk: 'T', text: 'Üç senaryo var. Erken gol gelirse maç tamamen bizim kontrolümüzde.' },
     { spk: 'T', text: 'Peki senin skor tahminin ne? Yorumlara yaz, Tahmin Ligi başlıyor!' },
   ],
@@ -46,20 +46,24 @@ window.EP = {
   ],
 
   // Taktik tahta: x 0→1 kendi kalesinden rakip kaleye, y 0→1 soldan sağa.
-  // İsimler [DOĞRULA]: basındaki muhtemel 11 tahminleri çelişkili; resmî kadro maç günü açıklanır.
+  // Muhtemel 11 — basın tahmini (Ajansspor/Türkgün/Duhuliye ortak listesi, 25.11.2026). Resmî kadro maç günü açıklanır.
+  // Forma numaraları doğrulanmadığı için jetonda mevki (pos), altında isim (nm) gösterilir.
+  lineupNote: 'MUHTEMEL 11 · basın tahmini · resmî kadro maç günü',
   lineup: [
-    { n: 1,  nm: 'KALECİ', x: .05, y: .50, px: .10, py: .50 },
-    { n: 2,  nm: 'SĞB',    x: .27, y: .88, px: .50, py: .90, run: [.62, .95] },
-    { n: 4,  nm: 'STP',    x: .21, y: .63, px: .36, py: .62 },
-    { n: 5,  nm: 'STP',    x: .21, y: .37, px: .36, py: .38 },
-    { n: 3,  nm: 'SLB',    x: .27, y: .12, px: .50, py: .10, run: [.62, .05] },
-    { n: 6,  nm: 'ÖN L',   x: .38, y: .40, px: .55, py: .42 },
-    { n: 8,  nm: 'ÖN L',   x: .38, y: .60, px: .55, py: .60 },
-    { n: 10, nm: '10',     x: .55, y: .50, px: .70, py: .52 },
-    { n: 7,  nm: 'SĞK',    x: .57, y: .84, px: .74, py: .78, cut: [.70, .66] },
-    { n: 11, nm: 'SLK',    x: .57, y: .16, px: .74, py: .22, cut: [.70, .34] },
-    { n: 9,  nm: 'FORVET', x: .69, y: .50, px: .82, py: .50 },
+    { pos: 'KL',  nm: 'NÜBEL',    x: .05, y: .50, px: .10, py: .50 },
+    { pos: 'SĞB', nm: 'MURILLO',  x: .27, y: .88, px: .50, py: .90, run: [.62, .95] },
+    { pos: 'STP', nm: 'DJALO',    x: .21, y: .63, px: .36, py: .62 },
+    { pos: 'STP', nm: 'EMİRHAN',  x: .21, y: .37, px: .36, py: .38 },
+    { pos: 'SLB', nm: 'RIDVAN',   x: .27, y: .12, px: .50, py: .10, run: [.62, .05] },
+    { pos: 'ÖL',  nm: 'SALİH',    x: .38, y: .40, px: .55, py: .42 },
+    { pos: 'ÖL',  nm: 'OLAITAN',  x: .38, y: .60, px: .55, py: .60 },
+    { pos: '10',  nm: 'ORKUN',    x: .55, y: .50, px: .70, py: .52 },
+    { pos: 'SĞK', nm: 'CERNY',    x: .57, y: .84, px: .74, py: .78, cut: [.70, .66] },
+    { pos: 'SLK', nm: 'TROSSARD', x: .57, y: .16, px: .74, py: .22, cut: [.70, .34] },
+    { pos: 'FV',  nm: 'VLAHOVIĆ', x: .69, y: .50, px: .82, py: .50 },
   ],
   passes: [ [5, 6], [6, 7], [7, 8] ],   // lineup index'leri: ÖN L → ÖN L → 10 → SĞK
-  opp: [ [.95,.5],[.82,.82],[.84,.62],[.84,.38],[.82,.18],[.72,.64],[.72,.36],[.63,.40],[.62,.72],[.62,.28],[.47,.42] ],
+  // Hapoel Beer Sheva muhtemel 11 (basın tahmini; mevki yerleşimi kanal yorumu)
+  opp: [ [.95,.5,'MARCIANO'],[.82,.82,'MİZRAHİ'],[.84,.62,'VITOR'],[.84,.38,'ROTMAN'],[.82,.18,'AMADOR'],
+         [.72,.64,'AMANKWAH'],[.72,.36,'YEHOSHUA'],[.63,.40,'EAST'],[.62,.72,'AHMED'],[.62,.28,'MALEDE'],[.47,.42,'ZLATANOVIĆ'] ],
 };

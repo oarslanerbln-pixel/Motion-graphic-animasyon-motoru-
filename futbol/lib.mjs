@@ -9,7 +9,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const FMT = { v: [1080, 1920], h: [1920, 1080] };
+export const FMT = { v: [1080, 1920], h: [1920, 1080], v4: [2160, 3840], h4: [3840, 2160] };
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.woff2': 'font/woff2', '.json': 'application/json' };
 
 export function serve() {

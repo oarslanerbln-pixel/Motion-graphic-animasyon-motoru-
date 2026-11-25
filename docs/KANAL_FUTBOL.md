@@ -94,6 +94,10 @@ UEFA kulüp maçları Salı/Çarşamba (ŞL) ve Perşembe (AL/KL) oynanır. Yay�
   - `gece` (Gece Mavisi): soğuk lacivert, beyaz projektör, altın ve turkuaz vurgu. Klasik "Avrupa gecesi" havası.
   - `neon` (Neon Holo): mor zemin, magenta ve camgöbeği projektörler, ızgaralı hologram saha, güçlü bloom. Genç kitle ve Shorts için.
   - `altin` (Altın Sinema): sıcak sodyum ışıkları, amber ve teal sinema renk düzeltmesi. Büyük maçlar, belgesel tonu.
+- **Seçilen tema: `neon` (lila).** Kullanıcı tercihi, 25.11.2026. Varsayılan olarak bu kullanılacak.
+- **Partiküller:** 700 projektör tozu, ön ve arka planda bokeh diskleri, saha üstünde 3D yükselen ışık zerreleri (perspektif doğru), ok uçlarında kıvılcımlar, topun ışık izi.
+- **Oyuncular gerçek isimleriyle** gösterilir (jetonun üstünde mevki, altında isim). Forma numarası doğrulanmadan yazılmaz. Muhtemel 11 için ekranda "basın tahmini" notu bulunur.
+- **4K çıktı:** `--fmt v4` (2160×3840) / `--fmt h4` (3840×2160). YouTube 4K yüklemeleri VP9/AV1 ile işlediği için 1080p izleyende de netlik artar.
 - **Kalite katmanı:** bloom (1/4 çözünürlükte eşik + iki yarıçaplı bulanıklık), anamorfik lens parlaması, 3D disk jetonlar (silindir gövde, speküler üst yüz, kenar ışığı, zemin yansıması, derinlik sıralı çizim), 3D kalınlıklı saha, parlak zemin yansımaları, kayan parlama. Render varsayılanı 2× süpersampling, lanczos + hafif unsharp, crf 15.
 - Karaoke altyazıda **konuşanın rengi** kullanılır (TRİBÜN altın, ANALİST turkuaz), böylece kimin konuştuğu ilk bakışta anlaşılır.
 - Diğer onaylı stillerden kullanım: Short'ların açılış kancasında **08 Kinetik Tipografi**, kanal tanıtım jeneriğinde **A 3D Partikül** (`crowd` ve `word:` şekilleri tribün ve logo için uygun). *(Bu motor dosyaları şu an repoda yok, eklenmesi gerekiyor.)*

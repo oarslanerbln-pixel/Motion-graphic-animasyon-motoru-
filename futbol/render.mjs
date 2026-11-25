@@ -10,7 +10,7 @@ const a = args({ ep: 'pilot_bjk_hbs', fmt: 'v', s: '2', workers: '2', audio: '',
 const [w, h] = FMT[a.fmt], fps = 30, N = +a.workers;
 const outDir = path.join(ROOT, 'out'); fs.mkdirSync(outDir, { recursive: true });
 // Kit adlandırması: <kanal>_<bölüm>_<stil>_<format>
-const name = a.name || `${a.kanal}_${a.ep}_taktik-${a.theme}_${a.fmt === 'v' ? '1080x1920' : '1920x1080'}`;
+const name = a.name || `${a.kanal}_${a.ep}_taktik-${a.theme}_${w}x${h}`;
 const srv = await serve();
 const browser = await chromium.launch();
 const t0 = Date.now();
