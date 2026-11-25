@@ -4,13 +4,13 @@
 Her replik ayrı sentezlenir; böylece segment başı/sonu kesin bilinir (ASR hizalamaya gerek kalmaz).
 Ses kişiliği için iki persona: ANALİST (sakin, veri) ve TRİBÜN (enerjik, taraftar).
 
-    export GEMINI_API_KEY=...          # Google AI Studio anahtarı
+    export GEMINI_API_KEY=...   # ya da ortam ayarlarında network secret: x-goog-api-key
     python3 futbol/tts_gemini.py --ep pilot_bjk_hbs [--model gemini-2.5-pro-preview-tts]
 
 Gereken ağ erişimi: generativelanguage.googleapis.com
 Çıktı PCM 24 kHz mono 16-bit; segmentler arasına --gap sn sessizlik eklenir.
 """
-import argparse, base64, json, os, re, struct, sys, time, urllib.request, wave
+import argparse, base64, json, os, re, struct, sys, time, urllib.error, urllib.request, wave
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -38,12 +38,19 @@ def synth(text, spk, model, key, retries=4):
                              'speechConfig': {'voiceConfig': {'prebuiltVoiceConfig': {'voiceName': voice}}}},
     }
     url = f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent'
-    req = urllib.request.Request(url, json.dumps(body).encode(), {'Content-Type': 'application/json', 'x-goog-api-key': key})
+    hdr = {'Content-Type': 'application/json'}
+    if key: hdr['x-goog-api-key'] = key   # yoksa ortamın ağ sırrı (network secret) proxy'de eklenir
+    req = urllib.request.Request(url, json.dumps(body).encode(), hdr)
     for i in range(retries):
         try:
             with urllib.request.urlopen(req, timeout=120) as r:
                 d = json.load(r)
             return base64.b64decode(d['candidates'][0]['content']['parts'][0]['inlineData']['data'])
+        except urllib.error.HTTPError as e:
+            msg = e.read().decode('utf-8', 'replace')[:400]
+            print(f'  deneme {i + 1}: HTTP {e.code} {msg}', file=sys.stderr)
+            if e.code in (400, 401, 403, 404): break
+            time.sleep(2 ** i)
         except Exception as e:
             print(f'  deneme {i + 1}: {e}', file=sys.stderr); time.sleep(2 ** i)
     raise SystemExit('TTS başarısız')
@@ -64,7 +71,7 @@ def main():
     ap.add_argument('--gap', type=float, default=.32)
     ap.add_argument('--tail', type=float, default=2.2)
     a = ap.parse_args()
-    key = os.environ.get('GEMINI_API_KEY') or sys.exit('GEMINI_API_KEY yok')
+    key = os.environ.get('GEMINI_API_KEY', '')   # boşsa: ortamdaki network secret kullanılır
     out = ROOT / 'out' / a.ep; out.mkdir(parents=True, exist_ok=True)
     segs = load_segs(a.ep)
     pcm, tl, t = bytearray(b'\0\0' * int(a.lead * SR)), [], a.lead
