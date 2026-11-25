@@ -33,3 +33,7 @@ Dosya adı: `<kanal>_<bölüm>_<stil>_<format>.mp4` — müzikli ve müziksiz ik
 - Kâğıt Katmanlar → Gerçek mi Efsane mi
 
 Kesinleşen eşleşmeleri bu tabloya işle.
+
+## Futbol maç önü kanalı (pilot)
+Strateji, bölüm şablonu ve üretim hattı: `docs/KANAL_FUTBOL.md` · Motor: `futbol/` (09 Taktik Tahta — onay bekliyor).
+Python Playwright yok; önizleme/render Node ile: `node futbol/prev.mjs`, `node futbol/render.mjs`.

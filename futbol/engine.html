@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8">
+<title>09 Taktik Tahta — Maç Önü motoru</title>
+<style>html,body{margin:0;background:#000;overflow:hidden}canvas{display:block}</style>
+</head><body>
+<canvas id="c"></canvas>
+<script>
+// Bölüm verisini URL'den seç: engine.html?ep=pilot_bjk_hbs&w=1080&h=1920&s=1.5&T=12
+(function(){
+  const ep=new URLSearchParams(location.search).get('ep')||'pilot_bjk_hbs';
+  const load=(src,opt)=>new Promise(r=>{const s=document.createElement('script');s.src=src;
+    s.onload=()=>r(true);s.onerror=()=>{if(!opt)console.error('yüklenemedi: '+src);r(false)};document.head.appendChild(s)});
+  // _tl.js = TTS sonrası gerçek zamanlar (opsiyonel). Yoksa hece hızına göre tahmini zaman kullanılır.
+  window.__boot=load('data/'+ep+'.js').then(()=>load('data/'+ep+'_tl.js',true)).then(()=>load('taktik.js'));
+})();
+</script>
+</body></html>
