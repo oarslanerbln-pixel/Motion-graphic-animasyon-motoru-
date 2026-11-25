@@ -15,10 +15,10 @@ const THEMES = {
     dust: '225,235,255', crowd: '255,214,170', acc: '#F4C653', acc2: '#7FE3FF', txt: '#E8EEF5', mut: '#B9C7D6', mut2: '#8EA3B8',
     grass: ['rgba(20,62,47,.94)', 'rgba(15,51,39,.94)'], line: '214,255,236', pool: '160,255,210', slab: ['#0C2A20', '#020806'],
     rim: '#BFE4FF', grid: 0, gloss: 1, refl: .22, bloom: .55, vig: .62, grade: ['rgba(40,90,160,.10)', 'soft-light'] },
-  neon: { name: 'Neon Holo', bg: ['#2A0E4D', '#0D0526', '#030109'], beam: ['255,80,210', '70,225,255'], beamI: 1.15, flare: '255,140,240',
-    dust: '255,200,255', crowd: '200,120,255', acc: '#FF4FD8', acc2: '#3DF2FF', txt: '#F3EAFF', mut: '#CDBDF0', mut2: '#9C88C8',
-    grass: ['rgba(26,14,58,.94)', 'rgba(20,10,48,.94)'], line: '120,240,255', pool: '170,90,255', slab: ['#2B145A', '#06020F'],
-    rim: '#FF8BEA', grid: .08, gloss: 1.5, refl: .35, bloom: .85, vig: .55, grade: ['rgba(255,40,200,.08)', 'soft-light'] },
+  neon: { name: 'Lila (minimal)', min: true, bg: ['#1E1036', '#0B0618', '#030107'], beam: ['196,170,255', '196,170,255'], beamI: .85, flare: '200,175,255',
+    dust: '220,205,255', crowd: '170,140,255', acc: '#C9A2FF', acc2: '#7FE0F0', txt: '#F1EBFF', mut: '#C5B8E2', mut2: '#8F84AE',
+    grass: ['rgba(24,15,48,.95)', 'rgba(20,12,41,.95)'], line: '226,214,255', pool: '150,110,255', slab: ['#24154A', '#05030C'],
+    rim: '#D9C2FF', grid: .035, gloss: .9, refl: .25, bloom: .45, vig: .7, grade: ['rgba(120,80,255,.06)', 'soft-light'] },
   altin: { name: 'Altın Sinema', bg: ['#2E1D0E', '#120A05', '#030201'], beam: ['255,196,120', '255,210,150'], beamI: 1.1, flare: '255,165,80',
     dust: '255,225,180', crowd: '255,190,120', acc: '#FFB547', acc2: '#5FE3CB', txt: '#F6EBDD', mut: '#D9C7AF', mut2: '#A8937A',
     grass: ['rgba(24,60,36,.94)', 'rgba(19,50,29,.94)'], line: '255,238,205', pool: '255,200,120', slab: ['#1E2A14', '#050602'],
@@ -117,17 +117,18 @@ function beams(T, inten) {
     g.fillStyle = rg; g.beginPath(); g.arc(fx, fy, 220 * U, 0, 6.283); g.fill();
     g.save(); g.translate(fx, fy); g.scale(1, .018);
     rg = g.createRadialGradient(0, 0, 0, 0, 0, W * .7);
-    rg.addColorStop(0, `rgba(${TH.flare},${.55 * inten})`); rg.addColorStop(1, `rgba(${TH.flare},0)`);
+    rg.addColorStop(0, `rgba(${TH.flare},${(TH.min ? .22 : .55) * inten})`); rg.addColorStop(1, `rgba(${TH.flare},0)`);
     g.fillStyle = rg; g.beginPath(); g.arc(0, 0, W * .7, 0, 6.283); g.fill(); g.restore();
     const vx = W / 2 - fx, vy = H / 2 - fy;
-    [[.32, 60, .028], [.62, 150, .016]].forEach(([t, r, al]) => {
+    if (!TH.min) [[.32, 60, .028], [.62, 150, .016]].forEach(([t, r, al]) => {
       const gx = fx + vx * t + Math.sin(T * .23 + sd) * 30 * U, gy = fy + vy * t;
       const gg = g.createRadialGradient(gx, gy, 0, gx, gy, r * U);
       gg.addColorStop(0, `rgba(${TH.flare},${al * inten})`); gg.addColorStop(.7, `rgba(${TH.flare},${al * .6 * inten})`); gg.addColorStop(1, `rgba(${TH.flare},0)`);
       g.fillStyle = gg; g.beginPath(); g.arc(gx, gy, r * U, 0, 6.283); g.fill();
     });
   }
-  for (const d of DUST) {
+  for (let di = 0; di < DUST.length; di += TH.min ? 6 : 1) {
+    const d = DUST[di];
     const x = ((d.x + Math.sin(T * .1 + d.ph) * .01) % 1) * W;
     const y = (((d.y - T * d.sp) % 1) + 1) % 1 * H;
     let lit = 0, col = TH.dust;
@@ -147,7 +148,7 @@ function bg(T) {
   const band = g.createLinearGradient(0, H * .12, 0, H * .3);
   band.addColorStop(0, 'rgba(0,0,0,0)'); band.addColorStop(.5, `rgba(${TH.crowd},.05)`); band.addColorStop(1, 'rgba(0,0,0,0)');
   g.fillStyle = band; g.fillRect(0, H * .12, W, H * .18);
-  for (let i = 0; i < 140; i++) {
+  for (let i = 0; i < (TH.min ? 0 : 140); i++) {
     const x = r() * W, y = H * (.15 + r() * .12), tw = .5 + .5 * Math.sin(T * (1 + r() * 2) + i), sz = (1.5 + r() * 4) * U;
     g.fillStyle = `rgba(${TH.crowd},${.05 + .08 * tw})`;
     g.beginPath(); g.arc(x, y, sz, 0, 6.283); g.fill();
@@ -164,6 +165,7 @@ function vignette() {
 // ---------- partiküller: bokeh diskleri + saha üstü 3D ışık zerreleri ----------
 const BOKEH = (() => { const r = rng(21), a = []; for (let i = 0; i < 38; i++) a.push({ x: r(), y: r(), r: 40 + r() * 150, ph: r() * 6.28, sp: .4 + r(), c: i % 2, fg: i < 7 }); return a; })();
 function bokeh(T, front, k = 1) {
+  if (TH.min) return;
   g.save(); g.globalCompositeOperation = 'lighter';
   for (const b of BOKEH) {
     if (b.fg !== front) continue;
@@ -177,7 +179,7 @@ function bokeh(T, front, k = 1) {
 }
 const MOTES = (() => { const r = rng(33), a = []; for (let i = 0; i < 420; i++) a.push({ X: (r() - .5) * 112, Y: (r() - .5) * 76, z: r(), sp: .25 + r() * .75, ph: r() * 6.28, c: r() < .5 ? 0 : 1, s: .6 + r() * 1.4 }); return a; })();
 function motes(T, a) {
-  if (a <= 0) return;
+  if (a <= 0 || TH.min) return;
   g.save(); g.globalCompositeOperation = 'lighter';
   const cols = [TH.acc, TH.acc2], hs = Math.sin(CAM.tilt);
   for (const m of MOTES) {
@@ -321,7 +323,7 @@ function drawPitch(a, draw) {
   g.beginPath(); pc.forEach(([x, y, s], i) => i ? g.lineTo(x, y + th * s) : g.moveTo(x, y + th * s)); g.closePath(); g.stroke(); g.restore();
   // çizgiler: çizim animasyonu + iki katmanlı glow
   g.lineCap = 'round'; g.lineJoin = 'round';
-  for (const [lw, al] of [[8 * U, .09], [3.4 * U, .22], [1.8 * U, .95]]) {
+  for (const [lw, al] of TH.min ? [[4 * U, .10], [2 * U, 1]] : [[8 * U, .09], [3.4 * U, .22], [1.8 * U, .95]]) {
     g.strokeStyle = `rgba(${TH.line},${al})`; g.lineWidth = lw;
     PL.forEach((l, i) => {
       const p = cl(draw * 1.6 - i * .045); if (p <= 0) return;
@@ -420,7 +422,7 @@ function arrowW(A, B, bend, col, p, dash, wpx = 4) {
     g.beginPath(); pts.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.stroke();
   }
   // ok çizilirken uçtan geriye saçılan kıvılcımlar
-  if (p < 1 && pts.length > 4) {
+  if (p < 1 && pts.length > 4 && !TH.min) {
     g.save(); g.globalCompositeOperation = 'lighter';
     const rr = rng((A[0] * 97 + B[1] * 31) | 0);
     for (let k = 0; k < 26; k++) {
@@ -603,6 +605,7 @@ SC.scen = (c) => {
   maskText('kanal tahmini · kesinlik değil', V ? W / 2 : 120 * U, V ? H * .17 + 50 * U : H * .17 + 44 * U, F(500, 22 * U, 'JetBrains Mono'), TH.mut2, win(lt, .3, 1.1), V ? 'center' : 'left', 1 * U);
   const n = sc.items.length, cw = V ? 900 * U : 520 * U, ch = V ? 250 * U : 430 * U, gp = 30 * U;
   const x0 = V ? (W - cw) / 2 : (W - (n * cw + (n - 1) * gp)) / 2, y0 = V ? H * .24 : H * .29;
+  if (TH.min) sc.items.forEach((it, i) => it.c = [TH.acc2, TH.acc, '#E58AA8'][i] || it.c);
   const hot = sc.items.findIndex(it => it.w && T >= wT(si, it.w));
   sc.items.forEach((it, i) => {
     const p = eOut(win(lt, .3 + i * .18, 1.2 + i * .18)); if (p <= 0) return;
