@@ -23,13 +23,13 @@ export function serve() {
   });
 }
 
-export async function openEngine(browser, base, { ep, w, h, s }) {
+export async function openEngine(browser, base, { ep, w, h, s, theme = 'gece' }) {
   const pg = await browser.newPage({ viewport: { width: w, height: h } });
   const logs = [];
   pg.on('console', m => logs.push(`[${m.type()}] ${m.text()}`));
   pg.on('pageerror', e => logs.push(`[pageerror] ${e.message}`));
   pg.on('requestfailed', r => logs.push(`[requestfailed] ${r.url()}`));
-  await pg.goto(`${base}/futbol/engine.html?ep=${ep}&w=${w}&h=${h}&s=${s}`);
+  await pg.goto(`${base}/futbol/engine.html?ep=${ep}&w=${w}&h=${h}&s=${s}&theme=${theme}`);
   try { await pg.waitForFunction('window.ENGINE && window.ENGINE.ready', null, { timeout: 20000 }); }
   catch (e) { console.error(logs.join('\n')); throw e; }
   const info = await pg.evaluate('window.ENGINE.ready');

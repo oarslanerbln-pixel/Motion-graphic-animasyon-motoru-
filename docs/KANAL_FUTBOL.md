@@ -90,6 +90,11 @@ UEFA kulüp maçları Salı/Çarşamba (ŞL) ve Perşembe (AL/KL) oynanır. Yay�
 - Koşu okları kesikli turkuaz, pas zinciri altın, top ışıklı iz bırakır, pres bölgesi altın ısı lekesiyle gösterilir.
 - Tipografi: Unbounded (başlık), Manrope 800 (altyazı ve değerler), JetBrains Mono (etiketler).
 - Palet: gece laciverti `#05070D`, beyaz `#F2F4F7`, altın `#F4C653`, analist turkuazı `#7FE3FF`. Kulüp vurguları: BJK `#F4F4F2`/`#0B0B0C`, GS `#A90432`/`#FDB912`, FB `#0A2A6B`/`#FFED00`, Türkiye `#E30A17`.
+- **3 renk teması** (`?theme=` / `--theme`), test aşamasında:
+  - `gece` (Gece Mavisi): soğuk lacivert, beyaz projektör, altın ve turkuaz vurgu. Klasik "Avrupa gecesi" havası.
+  - `neon` (Neon Holo): mor zemin, magenta ve camgöbeği projektörler, ızgaralı hologram saha, güçlü bloom. Genç kitle ve Shorts için.
+  - `altin` (Altın Sinema): sıcak sodyum ışıkları, amber ve teal sinema renk düzeltmesi. Büyük maçlar, belgesel tonu.
+- **Kalite katmanı:** bloom (1/4 çözünürlükte eşik + iki yarıçaplı bulanıklık), anamorfik lens parlaması, 3D disk jetonlar (silindir gövde, speküler üst yüz, kenar ışığı, zemin yansıması, derinlik sıralı çizim), 3D kalınlıklı saha, parlak zemin yansımaları, kayan parlama. Render varsayılanı 2× süpersampling, lanczos + hafif unsharp, crf 15.
 - Karaoke altyazıda **konuşanın rengi** kullanılır (TRİBÜN altın, ANALİST turkuaz), böylece kimin konuştuğu ilk bakışta anlaşılır.
 - Diğer onaylı stillerden kullanım: Short'ların açılış kancasında **08 Kinetik Tipografi**, kanal tanıtım jeneriğinde **A 3D Partikül** (`crowd` ve `word:` şekilleri tribün ve logo için uygun). *(Bu motor dosyaları şu an repoda yok, eklenmesi gerekiyor.)*
 
