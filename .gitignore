@@ -1,5 +1,5 @@
 cikti/*.mp4
-cikti/log_*.txt
+cikti/log*.txt
 fonts/*.tgz
 fonts/fontsource-*/
 __pycache__/
