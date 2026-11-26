@@ -1,54 +1,63 @@
 # YouTube yükleme paketi — Beşiktaş × Hapoel Beer Sheva (KIRK SEKİZ)
 
 Maç: 26 Kasım 2026 Perşembe, 20:45 TSİ, Batum (UEFA Avrupa Ligi, 5. hafta).
-**Yükleme: bugün, en geç 18:00 TSİ** (maçtan önce izlenme penceresi).
+**Yükleme sırası:** önce uzun video (yatay), sonra fragman (Short) — fragmanın "ilgili video" bağlantısı uzun videoya verilecek.
+**Saat:** bugün 12:00–14:00 arası, en geç 18:00.
 
 ## Dosyalar (`out/`)
 | Dosya | Kullanım |
 |---|---|
-| `kirksekiz_bjk-hbs_taktik-lila_2160x3840.mp4` | **YouTube Shorts / Reels / TikTok** (müzikli, 4K dikey) |
-| `kirksekiz_bjk-hbs_taktik-lila_2160x3840_muziksiz.mp4` | Müziksiz sürüm (TikTok'ta platform müziği eklenecekse) |
-| `kirksekiz_bjk-hbs_taktik-lila_3840x2160.mp4` | YouTube normal video (4K yatay) / X |
-| `pilot_bjk_hbs/pilot_bjk_hbs.tr.srt` | Türkçe altyazı (YouTube Studio → Altyazılar → Dosya yükle, "zamanlamalı") |
-| `pilot_bjk_hbs/thumbnail_1280x720.jpg` | Yatay video küçük resmi |
-| `brand/kirksekiz_icon.png`, `kirksekiz_banner.png`, `kirksekiz_watermark.png` | Kanal profil resmi, banner, video filigranı |
+| `kirksekiz_bjk-hbs-uzun_taktik-lila_2560x1440.mp4` | **Uzun video** (1440p, ≈4 dk, müzikli) |
+| `kirksekiz_bjk-hbs-uzun_taktik-lila_2560x1440_muziksiz.mp4` | Müziksiz sürüm |
+| `kirksekiz_bjk-hbs-fragman_taktik-lila_2160x3840.mp4` | **Fragman** — Shorts / Reels / TikTok (4K dikey, ≈25 sn) |
+| `bjk_hbs_uzun/bjk_hbs_uzun.tr.srt` · `bjk_hbs_fragman/bjk_hbs_fragman.tr.srt` | Türkçe altyazılar |
+| `pilot_bjk_hbs/thumbnail_1280x720.jpg` | Uzun video küçük resmi |
 
-## Başlık (en fazla 100 karakter; ilk 40 karakter mobilde görünür)
-- **Önerilen:** `Beşiktaş – Hapoel Beer Sheva: Batum'da plan ne? | 3 senaryo`
-- Alternatif: `Beşiktaş Batum'da: rakibin gözünden maç önü analizi`
-- Shorts için: `Beşiktaş – Hapoel: 60 saniyede maç önü #shorts`
+## 1) Uzun video
+**Başlık:** `Beşiktaş – Hapoel Beer Sheva: Kim nasıl oynarsa avantajı alır? | Maç önü analiz`
+Alternatif: `Kara Kartal Batum'da: rakibin gözünden plan, kilit oyuncular, 3 yol`
 
-## Açıklama
+**Açıklama:**
 ```
-Beşiktaş bu akşam 20:45'te Batum'da Hapoel Beer Sheva karşısında. Tarafsız saha, 20 bin kişilik stat, rakibin gözünden plan, muhtemel 11 ve 3 senaryo — maçtan önce 60 saniyede.
+Beşiktaş bu akşam 20:45'te Batum'da Hapoel Beer Sheva karşısında. Tarafsız saha, iki takımın planı, kilit oyuncular, tribün ve hava — ve en önemlisi: kim nasıl oynarsa avantajı alır?
+
+00:00 Giriş
+00:18 Maç Kartı
+00:45 Tablo ve Form
+01:15 Rakibin Gözünden
+01:37 Beşiktaş'ın Planı
+02:07 Şöyle Oynarsa
+02:29 Tribün ve Hava
+02:48 Favori ve Gerçek
+03:02 Kim Nasıl Oynarsa
+03:40 Tahmin Ligi
 
 📌 Skor tahminini yorumlara yaz; maçtan sonra birlikte bakalım.
 
 KIRK SEKİZ: maçtan 48 saat önce, tarafsız taktik analiz. Avrupa geceleri ve Milli Takım.
 
-ℹ️ Muhtemel 11 basın tahminidir (Ajansspor, Türkgün, Duhuliye); resmî kadro maç günü açıklanır. Senaryo yüzdeleri kanal yorumudur, kesinlik değildir.
+ℹ️ Muhtemel 11 basın tahminidir; resmî kadro maç günü açıklanır. Analizlerimiz Elo gücü, güncel form ve maç bağlamını birleştiren bir modelle desteklenir; oran ya da bahis tavsiyesi değildir.
 🎙️ Seslendirme yapay zekâ ile üretilmiştir. Animasyonlar kanala özeldir; kulüp logosu veya maç görüntüsü kullanılmamıştır.
 
-Kaynaklar: UEFA.com · Ajansspor · Mackolik · Sözcü
+Kaynaklar: UEFA.com · Ajansspor · Milli Gazete · Yeni Şafak · Hürriyet · Open-Meteo (hava) · ClubElo
 
-#Beşiktaş #HapoelBeerSheva #AvrupaLigi #UEL #MaçÖnü #TaktikAnaliz
+#Beşiktaş #HapoelBeerSheva #AvrupaLigi #MaçÖnü #TaktikAnaliz #KaraKartal
 ```
+**Etiketler:** beşiktaş, hapoel beer sheva, beşiktaş hapoel, avrupa ligi, batum, maç önü analiz, taktik analiz, muhtemel 11, kara kartal, kırk sekiz
 
-## Etiketler
-beşiktaş, hapoel beer sheva, beşiktaş hapoel, avrupa ligi, uefa avrupa ligi, batum, maç önü, taktik analiz, muhtemel 11, skor tahmini, beşiktaş maçı, kırk sekiz
+## 2) Fragman (Shorts)
+**Başlık:** `Kara Kartal Batum'da: plan ne? 🦅 Tam analiz kanalda #shorts`
+**Açıklama:** `Tam analiz (uzun video): <uzun videonun bağlantısı> · Skor tahminini yorumlara yaz!`
+**İlgili video (Shorts → "İlgili video"):** uzun videoyu seç. Fragmanın sonundaki ok bu bağlantıyı gösteriyor.
 
-## YouTube Studio ayarları
-- **Kategori:** Spor · **Dil:** Türkçe · **Altyazı dili:** Türkçe
-- **Çocuklar için değil**
-- **Değiştirilmiş veya sentetik içerik:** "Evet" işaretle. Seslendirme yapay zekâ ile üretildi; işaretlemek şeffaflık sağlar ve kanalı güvende tutar.
-- **Bitiş ekranı / kartlar:** Shorts'ta yok. Yatay videoda son 5 sn'ye "Abone ol" ve bir sonraki bölüm (GS × AEK, 6 Aralık) eklenecek.
-- **Sabitlenmiş yorum:** "Skorun ne? 👇 Tahmin Ligi'nin ilk haftası: en yakın tahmin bir sonraki bölümde anılacak."
-- **Filigran:** Studio → Özelleştirme → Marka → `kirksekiz_watermark.png`, "videonun sonunda" değil "tüm video".
-- **Yayın saati:** Bugün 12:00–14:00 arası (öğle trafiği), en geç 18:00.
+## YouTube Studio ayarları (ikisi için)
+- Kategori: Spor · Dil: Türkçe · Altyazı: Türkçe (SRT yükle) · Çocuklar için değil
+- **Değiştirilmiş veya sentetik içerik:** Evet (yapay zekâ seslendirme)
+- Uzun video: bitiş ekranı → abone ol + fragman/oynatma listesi; sabitlenmiş yorum: "Skorun ne? 👇 En yakın tahmin bir sonraki bölümde anılır."
+- Filigran: `brand/kirksekiz_watermark.png`
 
 ## Yükleme öncesi kontrol listesi
-- [ ] Videoyu sesli baştan sona izle: telaffuz (Trossard, Vlahović, Hapoel), müzik seviyesi.
-- [ ] Altyazı dosyası video ile senkron (Studio önizlemesinde kontrol et).
-- [ ] Muhtemel 11'i resmî kadro açıklanınca (maç günü, ~19:45) karşılaştır; çok farklıysa sabit yoruma not düş.
-- [ ] Başlıkta ve açıklamada taraf tutan ifade yok (kanal tarafsız).
-- [ ] TikTok/Reels'te altyazı ve önemli öğeler alt-sağ arayüz alanından uzak (✓ tasarımda y≈1640).
+- [ ] Uzun videoyu sesli izle: telaffuz (Trossard, Vlahović, Zlatanović, Dinamo Zagreb, Union Saint-Gilloise), müzik seviyesi.
+- [ ] Bölüm zaman damgaları videodakiyle örtüşüyor.
+- [ ] Resmî kadro (~19:45) basın tahmininden çok farklıysa sabit yoruma not.
+- [ ] Başlık/açıklamada oran, yüzde, bahis çağrışımı yok; kulüpler arası taraf tutan ifade yok.

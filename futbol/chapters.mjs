@@ -7,5 +7,5 @@ const { pg } = await openEngine(b, srv.base, { ep: a.ep, w: 640, h: 360, s: 0.5,
 const rows = await pg.evaluate(() => window.EP.scenes.map(s => [s.t0, s.chapter ? s.chapter.t : (s.type === 'intro' ? 'Giriş' : s.type === 'outro' ? 'Tahmin Ligi' : null)]));
 await b.close(); srv.close();
 const fmt = t => { t = Math.max(0, Math.floor(t)); return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`; };
-const tr = s => s.toLocaleLowerCase('tr-TR').replace(/(^|\s)\S/g, m => m.toLocaleUpperCase('tr-TR'));
+const tr = s => s.toLocaleLowerCase('tr-TR').replace(/(^|\s)\S/g, m => m.toLocaleUpperCase('tr-TR')).replace(/ Ve /g, ' ve ');
 for (const [t, n] of rows) if (n) console.log(`${fmt(t)} ${tr(n)}`);
