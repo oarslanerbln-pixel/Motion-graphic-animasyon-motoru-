@@ -44,8 +44,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--ep', default='pilot_bjk_hbs'); ap.add_argument('--ref-A'); ap.add_argument('--ref-T')
     ap.add_argument('--only', type=str, default=''); ap.add_argument('--out-dir', default='')
-    ap.add_argument('--lead', type=float, default=.7); ap.add_argument('--gap', type=float, default=.32); ap.add_argument('--tail', type=float, default=2.4)
+    ap.add_argument('--lead', type=float, default=.6); ap.add_argument('--gap', type=float, default=.26); ap.add_argument('--tail', type=float, default=2.0)
     ap.add_argument('--seed', type=int, default=7)
+    ap.add_argument('--tempo', type=float, default=1.0, help='perdeyi bozmadan hız (atempo), ör. 1.05')
     a = ap.parse_args()
     import torch
     from chatterbox.mtl_tts import ChatterboxMultilingualTTS
@@ -68,7 +69,8 @@ def main():
             wav = model.generate(norm(text), **kw)
             y = trim(to48(wav.squeeze(0).cpu().numpy(), model.sr)); np.save(cf, y)
             print(f'[{i}] {spk} {len(y) / SR:5.2f} sn ({time.time() - ts:.0f} sn işlem)  {text}', flush=True)
-        if prev is not None and prev != spk: pcm.append(np.zeros(int(.15 * SR), np.float32)); t += .15
+        if a.tempo != 1.0: y = to48(y, SR, f'atempo={a.tempo}')
+        if prev is not None and prev != spk: pcm.append(np.zeros(int(.12 * SR), np.float32)); t += .12
         d = len(y) / SR; tl.append({'t0': round(t, 3), 't1': round(t + d, 3)})
         pcm += [y, np.zeros(int(a.gap * SR), np.float32)]; t += d + a.gap; prev = spk
     pcm.append(np.zeros(int(a.tail * SR), np.float32))
