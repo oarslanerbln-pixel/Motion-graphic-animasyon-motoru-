@@ -16,7 +16,7 @@ window.EP = {
   rate: 5.6, gap: 0.32, lead: 0.7, tail: 2.4,   // hece/sn — TTS gelince _tl.js gerçek zamanları yazar
 
   segs: [
-    { spk: 'T', text: 'Bu akşam Batum\'da iki farklı hikâye kesişiyor.' },
+    { spk: 'T', text: 'Kara Kartal bu akşam Batum\'da kanatlanıyor!' },
     { spk: 'A', text: 'İlk sekizi korumak isteyen Beşiktaş, ilk galibiyetini arayan Hapoel.' },
     { spk: 'A', text: 'Rakibin gözünden plan ne? Beşiktaş nerede üstünlük kurabilir?' },
     { spk: 'T', text: 'Üç kilit isim, tribün, hava ve kim nasıl oynarsa avantajı alır.' },

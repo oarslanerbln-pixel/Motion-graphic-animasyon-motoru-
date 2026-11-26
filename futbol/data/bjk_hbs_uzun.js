@@ -18,7 +18,7 @@ window.EP = {
   segs: [
     { spk: 'T', text: 'Avrupa Ligi\'nde iki farklı hikâye bu akşam Batum\'da kesişiyor.' },
     { spk: 'A', text: 'Bir yanda ilk sekiz yarışındaki Beşiktaş, diğer yanda hâlâ ilk galibiyetini arayan Hapoel Beer Sheva.' },
-    { spk: 'T', text: 'Rakamlar, iki takımın planı, kilit oyuncular ve üç senaryo. Başlıyoruz.' },
+    { spk: 'T', text: 'Rakamlar, iki takımın planı ve kilit oyuncular. Kara Kartal\'ın Avrupa gecesi başlıyor!' },
     { spk: 'A', text: 'Maç, güvenlik gerekçesiyle İstanbul yerine Gürcistan\'ın Batum kentinde, tarafsız sahada oynanacak.' },
     { spk: 'A', text: 'Başlama saati Türkiye saatiyle yirmi kırk beş. Stat yaklaşık yirmi bin kişilik ve biletlerin büyük bölümü tükendi.' },
     { spk: 'T', text: 'Batum, Sarp sınır kapısına yaklaşık yirmi kilometre. Yani tribünde Türk taraftarların ağırlıkta olması bekleniyor.' },
@@ -45,10 +45,12 @@ window.EP = {
     { spk: 'A', text: 'Kâğıt üstünde favori Beşiktaş; güç farkı ve bu sezonki form aynı yönü gösteriyor. Ama bu tür maçlar çoğu zaman tek bir detayla döner.' },
     { spk: 'T', text: 'O yüzden asıl soru şu: kim nasıl oynarsa avantajı eline alır?' },
     { spk: 'A', text: 'Beşiktaş ilk yirmi dakikada kanatlardan sabırla yüklenir ve erken golü bulursa, Hapoel bloğunu bozup açılmak zorunda kalır. Bu, Beşiktaş\'ın en sevdiği senaryo.' },
+    { spk: 'T', text: 'Kartal erken golü bulursa, bu işten sağlam çıkar!' },
     { spk: 'A', text: 'Ama Beşiktaş topa sahip olup ceza sahasına girmekte zorlanırsa, dakikalar ilerledikçe sabırsızlık başlar ve Hapoel\'in kontraları tehlikeli hale gelir.' },
     { spk: 'T', text: 'Hapoel savunma disiplinini altmışıncı dakikaya kadar korursa, maç bir duran topa ya da tek bir bireysel harekete kalabilir.' },
     { spk: 'A', text: 'Kilit an, top kayıplarından sonraki ilk saniyeler. Orada üstün gelen taraf maçın ritmini belirler.' },
     { spk: 'T', text: 'Bir sonraki durak: Beşiktaş on Aralık\'ta Leverkusen deplasmanında. O maçı da kırk sekiz saat önceden analiz edeceğiz.' },
+    { spk: 'T', text: 'Haydi Kara Kartal, tarihinden al gücünü!' },
     { spk: 'T', text: 'Skor tahminini yorumlara yaz; maçtan sonra birlikte bakalım.' },
   ],
 
@@ -90,13 +92,13 @@ window.EP = {
       wx: { temp: '7°C', sky: 'Açık', rain: '%0', wind: '7 km/sa', hum: '%80', src: 'Open-Meteo tahmini · Batum 21:45 yerel' } },
     { type: 'balance', seg: [26, 27], chapter: { n: '07', t: 'FAVORİ VE GERÇEK' },
       lean: 0.68, note: 'arka planda: Elo + form + bağlam modeli · oran değil, eğilim' },
-    { type: 'scen', seg: [28, 31], chapter: { n: '08', t: 'KİM NASIL OYNARSA' }, title: 'KİM NASIL OYNARSA', sub: 'taktik yollar · tahmin değil',
+    { type: 'scen', seg: [28, 32], chapter: { n: '08', t: 'KİM NASIL OYNARSA' }, title: 'KİM NASIL OYNARSA', sub: 'taktik yollar · tahmin değil',
       items: [
         { t: 'Erken gol + kanat baskısı', d: 'Hapoel bloğu bozulur, açılmak zorunda kalır', adv: 'home', w: 'beşiktaş', s: 28 },
-        { t: 'Kısır top hakimiyeti', d: 'Sabırsızlık başlar, kontralar tehlikeli', adv: 'away', w: 'ama', s: 29 },
-        { t: '60. dakikaya kadar disiplin', d: 'Duran top ya da tek bireysel hareket', adv: 'even', w: 'hapoel', s: 30 },
+        { t: 'Kısır top hakimiyeti', d: 'Sabırsızlık başlar, kontralar tehlikeli', adv: 'away', w: 'ama', s: 30 },
+        { t: '60. dakikaya kadar disiplin', d: 'Duran top ya da tek bireysel hareket', adv: 'even', w: 'hapoel', s: 31 },
       ] },
-    { type: 'outro', seg: [32, 33] },
+    { type: 'outro', seg: [33, 35] },
   ],
 
   // Taktik tahta: x 0→1 kendi kalesinden rakip kaleye, y 0→1 soldan sağa.

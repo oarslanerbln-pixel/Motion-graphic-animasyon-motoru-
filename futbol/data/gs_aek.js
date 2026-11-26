@@ -22,6 +22,7 @@ window.EP = {
     { spk: 'T', text: 'Ve bitiricilik: Yunus içeri kat ettiğinde, Deniz Gül ceza sahasında fırsat kollayacak.' },
     { spk: 'T', text: 'Üç senaryo var. Erken gol gelirse, Galatasaray Atina\'da maçı soğutmayı bilir.' },
     { spk: 'A', text: 'Skor uzun süre eşit kalırsa, sabır ve duran toplar belirleyici olur.' },
+    { spk: 'T', text: 'Haydi Cimbom, Aslan bu gece Atina\'da kükresin!' },
     { spk: 'T', text: 'Skor tahminini yorumlara yaz; maçtan sonra birlikte bakalım.' },
   ],
 
@@ -51,7 +52,7 @@ window.EP = {
         { t: 'Uzun süre eşitlik', d: 'Sabır ve duran toplar belirleyici', adv: 'even', w: 'eşit', s: 8 },
         { t: 'Geriye düşmek', d: 'AEK tribünü oyuna girer, risk artar', adv: 'away' },
       ] },
-    { type: 'outro', seg: [9, 9] },
+    { type: 'outro', seg: [9, 10] },
   ],
 
   // Muhtemel 11 — [DOĞRULA] Aston Villa maçı kadro haberleri çelişkili (Osimhen dizinden ameliyatlı, sağ bek ve forvet belirsiz).

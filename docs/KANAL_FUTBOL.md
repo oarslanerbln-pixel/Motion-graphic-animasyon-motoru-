@@ -155,3 +155,13 @@ node futbol/render.mjs --ep pilot_bjk_hbs --fmt v --audio out/pilot_bjk_hbs/mix.
 - **Model arka planda kalır, anlatım taktiktir.** İzleyiciye yüzde, oran, "skor tahmini olasılığı" sunulmaz (kumar çağrışımı yok). Favori en fazla bir cümleyle, sayısız söylenir ("kâğıt üstünde favori X, ama…"). Senaryolar "kim nasıl oynarsa avantajı alır" diliyle anlatılır; kartlarda yüzde yerine **Avantaj: X / Denge** göstergesi.
 - Model, hangi senaryonun anlatılmaya değer olduğunu seçmek ve anlatımın abartıya kaçmasını önlemek için kullanılır (ör. "erken gol" yolunun maçı en çok belirlediği).
 - Doğrulanamayan bilgi söylenmez (ör. rakip teknik direktör adı, çelişkili skorlar → "ağır yenilgi").
+
+## 9. Karizma bankası (taraftar enerjisi, eşit doz)
+- **ANALİST tarafsızdır.** **TRİBÜN**, her bölümde o bölümün Türk temsilcisinin taraftar sesidir; her Türk kulübüne ve Milli Takım'a aynı dozda (bölüm başına 2–3 replik: açılışta, kritik senaryoda, kapanışta).
+- Kulüpler birbirine karşı konumlanmaz, rakip küçümsenmez, başka Türk kulübüne gönderme yapılmaz.
+- Örnek replikler (genişletilebilir):
+  - **Beşiktaş:** "Haydi Kara Kartal, tarihinden al gücünü!" · "Kartal erken golü bulursa, bu işten sağlam çıkar!" · "Kara Kartal bu akşam kanatlanıyor!"
+  - **Galatasaray:** "Haydi Cimbom, Aslan bu gece kükresin!" · "Avrupa geceleri Cimbom'un sahnesi!"
+  - **Fenerbahçe:** "Haydi Kanarya, Avrupa'da da sesini duyur!" · "Sarı Kanarya bu gece uçuşa geçiyor!"
+  - **Trabzonspor:** "Haydi Bordo Mavi, Karadeniz fırtınası Avrupa'da esiyor!"
+  - **Milli Takım:** "Haydi Bizim Çocuklar, ay yıldız bu gece parlasın!"
