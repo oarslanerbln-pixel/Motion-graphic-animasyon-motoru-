@@ -2,7 +2,7 @@
 
 **Durum:** Pilot aşaması · 25 Kasım 2026
 **Kapsam:** Türk takımlarının Şampiyonlar Ligi / Avrupa Ligi (/Konferans Ligi) maçları + A Milli Takım
-**Kanal adı:** `KIRK SEKİZ` (48) — maçtan 48 saat önce. Logo paleti: Fildişi `#F4EFE6` + Lacivert `#14213D` + altın `#8C6416` (sembol seçimi sürüyor)
+**Kanal adı:** `KIRK SEKİZ` (48) — maçtan 48 saat önce. Logo: **İ Noktası** (onaylandı) — serif 48 + altın top; Fildişi `#F4EFE6` + Lacivert `#14213D` + altın `#B08A3E`
 
 ---
 
