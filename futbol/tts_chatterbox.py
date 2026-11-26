@@ -27,7 +27,7 @@ def load_segs(ep):
 def norm(t):
     for a, b in {'Vlahović': 'Vlahoviç', 'Zlatanović': 'Zlatanoviç', 'Saint-Gilloise': 'Sen Jilvaz', 'Crystal Palace': 'Kristal Pelıs',
                  'Yehoshua': 'Yehoşua', 'Djalo': 'Calo', 'Agbadou': 'Agbadu', 'OFI': 'Ofi', 'Celtic': 'Seltik', 'Beer Sheva': 'Bir Şeva',
-                 'Hoffenheim': 'Hofenhaym', 'Leverkusen': 'Leverkuzen', '≈': 'yaklaşık '}.items(): t = t.replace(a, b)
+                 'Hoffenheim': 'Hofenhaym', 'Dinamo Zagreb': 'Dinamo Zagrep', 'Leverkusen': 'Leverkuzen', '≈': 'yaklaşık '}.items(): t = t.replace(a, b)
     return t
 
 CHAIN = ('highpass=f=70,equalizer=f=3200:t=q:w=1.2:g=1.5,deesser=i=0.3,'
