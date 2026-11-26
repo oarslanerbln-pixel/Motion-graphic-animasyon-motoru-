@@ -22,11 +22,13 @@ def hull(ps):
         hi.append(p)
     return lo[:-1]+hi[:-1]
 S=season
-SNOW = S=="kis"; RAIN = S=="yagmur"
+SNOW = S=="kis"; RAIN = S=="yagmur"; RAMA = S=="ramazan"; YAZ = S=="yaz"
 CFG={
  "kis":     dict(ground="#EEF2F8",edge="#B9C3D6",road="#646A7E",grass="#F4F7FB",shadow="#5A6A9A",tops="#FFFFFF",roof=["#FFFFFF"],trees="pine"),
  "yagmur":  dict(ground="#C9CFD6",edge="#8F98A8",road="#4E5566",grass="#8FB38A",shadow="#3B4660",tops=None,roof=["#9C5A4E","#5F5A7A","#3F6672"],trees="round",tree=("#4F8A55","#6FA56E")),
  "bahar":   dict(ground="#F2E8DC",edge="#C8B4BE",road="#6A6378",grass="#BFE3A0",shadow="#5B3B6E",tops=None,roof=["#D9707F","#8A6FB5","#5E9AA0"],trees="round",tree=("#F4A9C0","#FBD1DE")),
+ "ramazan": dict(ground="#EADBC8",edge="#B79F8A",road="#5E5670",grass="#9CC79A",shadow="#4A3360",tops=None,roof=["#2F6F73","#8A4F5E","#C9933A"],trees="round",tree=("#5E9E6A","#86BF84")),
+ "yaz":     dict(ground="#E9DFCF",edge="#B7A48E",road="#5A5670",grass="#8FCB7A",shadow="#3E3358",tops=None,roof=["#C9614F","#4F7C8C","#7B5B8C"],trees="round",tree=("#3F9A5A","#6CC27A")),
  "sonbahar":dict(ground="#EEDCC6",edge="#C3A68A",road="#6A5F6E",grass="#D8C27A",shadow="#5B3B30",tops=None,roof=["#B5523B","#7B4F6B","#3F6672"],trees="round",tree=("#E07A2F","#F2B544")),
 }[S]
 pals=[("#FFF4E8","#F4BBA6","#D98A79"),("#F0FFF8","#ABDDC9","#71B49E"),("#F7F2FF","#C9BBF0","#9280CC"),("#FFF9E6","#F4D68C","#D0A752"),("#F3F8FF","#B8CDEB","#7F9CC8"),("#FFF0F3","#F2B8C6","#CF8299")]
@@ -41,12 +43,14 @@ for i in range(N):
         if (i,j) in [(1,4),(2,4)]: types[(i,j)]="plaza"
         elif (i,j) in [(6,4),(1,5),(0,1),(5,6),(0,4)]: types[(i,j)]="park"
         elif (i,j) in [(2,5),(0,5)]: types[(i,j)]="house"
+        elif RAMA and (i,j)==(1,1): types[(i,j)]="mosque"
+        elif RAMA and (i,j) in [(2,2),(2,1),(1,2)]: types[(i,j)]="house"
         elif (i,j)==HERO: types[(i,j)]="hero"
         elif d>3.6 or (i,j) in [(6,5),(6,6)]: types[(i,j)]="house"
         elif random.random()<0.3: types[(i,j)]="shop"
         else: types[(i,j)]="tower"
 ground=[]; shadows=[]; items=[]; wins=[]; kf=[]; cars=[]; pools=[]; refl=[]; walkers_back=[]; walkers_front=[]
-nb=[0]
+nb=[0]; bloom=[]; extras=[]
 def rise(delay):
     nb[0]+=1; n=nb[0]
     kf.append(f".b{n}{{animation-name:r{n}}}@keyframes r{n}{{0%,{delay*10:.1f}%{{transform:scaleY(0)}}{delay*10+3.5:.1f}%{{transform:scaleY(1.07)}}{delay*10+5:.1f}%{{transform:scaleY(.98)}}{delay*10+6:.1f}%,100%{{transform:scaleY(1)}}}}")
@@ -97,6 +101,7 @@ def box(i0,j0,i1,j1,h,pal,z=0,snowcap=False):
         # snow drip on edges
         s+=f'<polyline points="{pts([up(D,h-1.5*K),up(lerp(D,C,.3),h-3.5*K),up(lerp(D,C,.55),h-2*K),up(C,h-3*K),up(lerp(C,B,.4),h-1.5*K),up(lerp(C,B,.7),h-3.2*K),up(B,h-1.5*K)])}" fill="none" stroke="#FFFFFF" stroke-width="{2.6*K:.1f}" stroke-linejoin="round" stroke-linecap="round"></polyline>'
     s+=f'<polyline points="{pts([up(D,h),up(C,h),up(B,h)])}" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width=".8"></polyline>'
+    s+=f'<line x1="{f(C[0])}" y1="{f(C[1])}" x2="{f(C[0])}" y2="{f(C[1]-h)}" stroke="#FFFFFF" stroke-opacity=".28" stroke-width=".9"></line>'
     s+=f'<polygon class="ns" points="{pts([D,C,B,up(B,h),up(A,h),up(D,h)])}"></polygon>'
     return s,(A,B,C,D)
 def shadow(i0,j0,i1,j1,h):
@@ -114,6 +119,7 @@ def windows(D,C,B,h,z,rows_from=10,step=16,cols=(0.16,0.58),wcol=0.26):
                 q=lambda u,v:(p0[0]+u*(p1[0]-p0[0]), p0[1]+u*(p1[1]-p0[1])-v)
                 poly=[q(u0,v0),q(u1,v0),q(u1,v1),q(u0,v1)]
                 out.append(f'<polygon class="wd" points="{pts(poly)}"></polygon>')
+                if not SNOW: out.append(f'<line x1="{f(poly[3][0]-.4)}" y1="{f(poly[3][1]+.7)}" x2="{f(poly[2][0]+.4)}" y2="{f(poly[2][1]+.7)}" stroke="#FFFFFF" stroke-opacity=".38" stroke-width="{.9*K:.1f}" stroke-linecap="round"></line>')
                 if SNOW and random.random()<.5:
                     out.append(f'<line x1="{f(poly[0][0])}" y1="{f(poly[0][1]+.6)}" x2="{f(poly[1][0])}" y2="{f(poly[1][1]+.6)}" stroke="#fff" stroke-width="{1.4*K:.1f}" stroke-linecap="round"></line>')
                 if random.random()<0.12: continue
@@ -122,6 +128,7 @@ def windows(D,C,B,h,z,rows_from=10,step=16,cols=(0.16,0.58),wcol=0.26):
                 cls="w tv" if random.random()<.08 else "w"
                 col=random.choice(["#FFD27A","#FFC56B","#FFE2A0","#FFB45E"])
                 lit.append(f'<polygon class="{cls} wl{int(dur*10)}" fill="{col}" points="{pts(poly)}" style="animation-delay:{t0-10:.2f}s"></polygon>')
+                bloom.append(f'<polygon class="{cls} wl{int(dur*10)}" fill="{col}" points="{pts(poly)}" style="animation-delay:{t0-10:.2f}s"></polygon>')
     return "".join(out)+"".join(lit)
 def tree(cx,cy,s=1.0):
     s*=K; dl=-random.random()*3
@@ -164,6 +171,37 @@ for (i,j) in order:
     t=types[(i,j)]; key=(j,i)
     dl=0.15+(i+j)*0.1+random.random()*0.12
     if t=="road": continue
+    if t=="mosque":
+        pal_m=("#F6EEE2","#E8DAC6","#CDB89E")
+        s,(A,B,C,D)=box(i+.12,j+.12,i+.88,j+.88,26*K,pal_m)
+        s+=windows(D,C,B,26*K,0,rows_from=8,step=30,cols=(0.2,0.6),wcol=.2)
+        s2,_=box(i+.3,j+.3,i+.7,j+.7,7*K,pal_m,z=26*K); s+=s2
+        cx_,cy_=up(P(i+.5,j+.5),33*K); R=15*K
+        s+=f'<path d="M {f(cx_-R)} {f(cy_)} A {f(R)} {f(R*1.05)} 0 0 1 {f(cx_+R)} {f(cy_)} A {f(R)} {f(R*.5)} 0 0 1 {f(cx_-R)} {f(cy_)} Z" fill="#8FB3C2"></path>'
+        s+=f'<path d="M {f(cx_)} {f(cy_-R*1.05)} A {f(R)} {f(R*1.05)} 0 0 1 {f(cx_+R)} {f(cy_)} A {f(R)} {f(R*.5)} 0 0 1 {f(cx_)} {f(cy_+R*.5)} Z" fill="#6E93A6"></path>'
+        s+=f'<path d="M {f(cx_-R*.55)} {f(cy_-R*.6)} A {f(R*.7)} {f(R*.7)} 0 0 1 {f(cx_-R*.1)} {f(cy_-R*.95)}" fill="none" stroke="#FFFFFF" stroke-opacity=".6" stroke-width="{f(1.4*K)}" stroke-linecap="round"></path>'
+        s+=f'<line x1="{f(cx_)}" y1="{f(cy_-R*1.05)}" x2="{f(cx_)}" y2="{f(cy_-R*1.05-7*K)}" stroke="#D9A441" stroke-width="{f(1*K)}"></line><circle cx="{f(cx_+1.2*K)}" cy="{f(cy_-R*1.05-9*K)}" r="{f(2.4*K)}" fill="#D9A441"></circle><circle cx="{f(cx_+2.2*K)}" cy="{f(cy_-R*1.05-9.6*K)}" r="{f(2*K)}" fill="#E8DAC6"></circle>'
+        s+=f'<path class="ns" d="M {f(cx_-R)} {f(cy_)} A {f(R)} {f(R*1.05)} 0 0 1 {f(cx_+R)} {f(cy_)} A {f(R)} {f(R*.5)} 0 0 1 {f(cx_-R)} {f(cy_)} Z"></path>'
+        tops=[]
+        for (a_,b_) in ((i+.06,j+.94),(i+.94,j+.06)):
+            mh=118*K; base=P(a_,b_); w2=.06
+            mm,_=box(a_-w2,b_-w2,a_+w2,b_+w2,mh,pal_m); s+=mm
+            bx,by=up(base,mh*.74)
+            s+=f'<ellipse cx="{f(bx)}" cy="{f(by)}" rx="{f(5.5*K)}" ry="{f(2.6*K)}" fill="#CDB89E"></ellipse><ellipse cx="{f(bx)}" cy="{f(by-1.2*K)}" rx="{f(5.5*K)}" ry="{f(2.6*K)}" fill="#F6EEE2"></ellipse>'
+            s+=f'<circle class="lampc" cx="{f(bx-3.6*K)}" cy="{f(by+.6*K)}" r="{f(.9*K)}"></circle><circle class="lampc" cx="{f(bx)}" cy="{f(by+1.8*K)}" r="{f(.9*K)}"></circle><circle class="lampc" cx="{f(bx+3.6*K)}" cy="{f(by+.6*K)}" r="{f(.9*K)}"></circle>'
+            tx_,ty_=up(base,mh)
+            s+=f'<polygon points="{f(tx_-3.4*K)},{f(ty_+1*K)} {f(tx_)},{f(ty_-17*K)} {f(tx_+3.4*K)},{f(ty_+1*K)}" fill="#6E93A6"></polygon><polygon points="{f(tx_)},{f(ty_+1*K)} {f(tx_)},{f(ty_-17*K)} {f(tx_+3.4*K)},{f(ty_+1*K)}" fill="#557A8C"></polygon>'
+            s+=f'<line x1="{f(tx_)}" y1="{f(ty_-17*K)}" x2="{f(tx_)}" y2="{f(ty_-21*K)}" stroke="#D9A441" stroke-width="{f(.8*K)}"></line>'
+            s+=f'<polygon class="ns" points="{f(tx_-3.4*K)},{f(ty_+1*K)} {f(tx_)},{f(ty_-17*K)} {f(tx_+3.4*K)},{f(ty_+1*K)}"></polygon>'
+            tops.append(up(base,mh*.86))
+            bloom.append(f'<circle class="lampc" cx="{f(bx)}" cy="{f(by+1*K)}" r="{f(4*K)}"></circle>')
+        (x0,y0),(x1,y1)=tops
+        mx,my=(x0+x1)/2,(y0+y1)/2+10*K
+        s+=f'<path d="M {f(x0)} {f(y0)} Q {f(mx)} {f(my+6*K)} {f(x1)} {f(y1)}" fill="none" stroke="#FFE7A8" stroke-opacity=".5" stroke-width=".5" stroke-dasharray="1 1.5"></path>'
+        mah=f'<text class="mahya" x="{f(mx)}" y="{f(my+2*K)}" text-anchor="middle" font-family="Unbounded" font-weight="600" font-size="{f(9*K)}" letter-spacing="{f(1.2*K)}" fill="#FFE7A8">RAMAZAN</text>'
+        s+=mah; bloom.append(mah)
+        shadow(i+.12,j+.12,i+.88,j+.88,60*K)
+        items.append((key,f'<g class="{rise(dl)}">{s}</g>')); continue
     if t=="plaza":
         q=[P(i+.04,j+.04),P(i+.96,j+.04),P(i+.96,j+.96),P(i+.04,j+.96)]
         pav="#FFFFFF" if SNOW else "#E8DCCB"
@@ -187,7 +225,7 @@ for (i,j) in order:
             if SNOW: s+=f'<line x1="{f(b0[0])}" y1="{f(b0[1]-6.4*K)}" x2="{f(b1[0])}" y2="{f(b1[1]-6.4*K)}" stroke="#fff" stroke-width="{f(1.6*K)}" stroke-linecap="round"></line>'
             for (a_,b_) in ((.18,.25),(.82,.3)):
                 x_,y_=P(i+a_,j+b_)
-                fl={"kis":"#FFFFFF","yagmur":"#6FA56E","bahar":"#F28AAE","sonbahar":"#E07A2F"}[S]
+                fl={"kis":"#FFFFFF","yagmur":"#6FA56E","bahar":"#F28AAE","sonbahar":"#E07A2F","ramazan":"#E2574C","yaz":"#F7D44A"}[S]
                 s+=f'<rect x="{f(x_-3*K)}" y="{f(y_-5*K)}" width="{f(6*K)}" height="{f(5*K)}" fill="#C96B4E"></rect><circle cx="{f(x_)}" cy="{f(y_-7*K)}" r="{f(3.6*K)}" fill="{fl}"></circle><circle cx="{f(x_+1.5*K)}" cy="{f(y_-8.5*K)}" r="{f(1.6*K)}" fill="#F7D44A"></circle>'
             s+=f'<polygon class="ns" points="{pts([up(b0,0),up(b1,0),up(b1,10*K),up(b0,10*K)])}"></polygon>'
         items.append((key,f'<g class="{rise(dl)}">{s}</g>')); continue
@@ -251,12 +289,17 @@ for (i,j) in order:
     if h2:
         m2=.28
         s2,(A2,B2,C2,D2)=box(i+m2,j+m2,i+1-m2,j+1-m2,h2,pal,z=h1,snowcap=True)
-        s+=s2; s+=windows(D2,C2,B2,h2,h1,rows_from=8,step=15,cols=(0.3,),wcol=.4); top_h=h1+h2
+        s+=s2; s+=windows(D2,C2,B2,h2,0,rows_from=8,step=15,cols=(0.3,),wcol=.4); top_h=h1+h2
     shadow(i+m,j+m,i+1-m,j+1-m,top_h)
     rt=random.random(); tp=up(P(i+.5,j+.5),top_h)
     if t=="hero" or rt<0.35:
         s+=f'<line x1="{f(tp[0])}" y1="{f(tp[1])}" x2="{f(tp[0])}" y2="{f(tp[1]-24*K)}" stroke="#4A3A55" stroke-width="1.4"></line>'
         s+=f'<circle class="beacon" cx="{f(tp[0])}" cy="{f(tp[1]-24*K)}" r="{f(2.2*K)}" fill="#FF3B3B" style="animation-delay:{-random.random()*1.6:.2f}s"></circle>'
+    elif rt>=0.65 and not h2:
+        for (a_,b_) in ((.35,.4),(.62,.55)):
+            q0=up(P(i+a_,j+b_),top_h); w_=5*K
+            s+=f'<polygon points="{pts([q0,(q0[0]+w_,q0[1]-w_*.58),(q0[0]+w_,q0[1]-w_*.58-4*K),(q0[0],q0[1]-4*K)])}" fill="#C9C3D3"></polygon><polygon points="{pts([q0,(q0[0]-w_*.8,q0[1]-w_*.46),(q0[0]-w_*.8,q0[1]-w_*.46-4*K),(q0[0],q0[1]-4*K)])}" fill="#E6E1EC"></polygon><polygon points="{pts([(q0[0],q0[1]-4*K),(q0[0]+w_,q0[1]-w_*.58-4*K),(q0[0]+w_*.2,q0[1]-w_*1.04-4*K),(q0[0]-w_*.8,q0[1]-w_*.46-4*K)])}" fill="#F4F1F7"></polygon>'
+            s+=f'<polygon class="ns" points="{pts([q0,(q0[0]+w_,q0[1]-w_*.58),(q0[0]+w_,q0[1]-w_*.58-4*K),(q0[0]+w_*.2,q0[1]-w_*1.04-4*K),(q0[0]-w_*.8,q0[1]-w_*.46-4*K),(q0[0]-w_*.8,q0[1]-w_*.46)])}"></polygon>'
     elif rt<0.65:
         x,y=tp
         s+=f'<rect x="{f(x-6*K)}" y="{f(y-14*K)}" width="{f(12*K)}" height="{f(10*K)}" class="tank"></rect><ellipse cx="{f(x)}" cy="{f(y-4*K)}" rx="{f(6*K)}" ry="{f(2.6*K)}" class="tank"></ellipse><ellipse cx="{f(x)}" cy="{f(y-14*K)}" rx="{f(6*K)}" ry="{f(2.6*K)}" class="{"snowtop" if SNOW else "tank2"}"></ellipse>'
@@ -272,7 +315,9 @@ for t in [0.5,1.5,5.5,6.5]:
     for (ii,jj) in [(ROAD_I-0.02,t),(t,ROAD_J+1.02)]:
         x,y=P(ii,jj); hl=20*K
         g=(f'<line x1="{f(x)}" y1="{f(y)}" x2="{f(x)}" y2="{f(y-hl)}" stroke="#4A3A55" stroke-width="1.3"></line>'
+           f'<polygon class="lg" points="{f(x-1.6*K)},{f(y-hl)} {f(x+1.6*K)},{f(y-hl)} {f(x+13*K)},{f(y+3*K)} {f(x-9*K)},{f(y+3*K)}" fill="url(#cone)"></polygon>'
            f'<circle class="lg" cx="{f(x)}" cy="{f(y-hl)}" r="{f(9*K)}" fill="url(#halo)"></circle><circle class="lampc" cx="{f(x)}" cy="{f(y-hl)}" r="{f(2.2*K)}"></circle>')
+        bloom.append(f'<circle class="lampc" cx="{f(x)}" cy="{f(y-hl)}" r="{f(3.5*K)}"></circle>')
         if SNOW: g+=f'<ellipse cx="{f(x)}" cy="{f(y-hl-2.2*K)}" rx="{f(2.6*K)}" ry="{f(1.2*K)}" fill="#fff"></ellipse>'
         items.append(((jj,ii),f'<g>{g}</g>'))
         pools.append(f'<ellipse cx="{f(x+4*K)}" cy="{f(y+2*K)}" rx="{f(16*K)}" ry="{f(8*K)}" fill="url(#pool)"></ellipse>')
@@ -280,7 +325,7 @@ for t in [0.5,1.5,5.5,6.5]:
 # ---------- cute characters ----------
 SKIN=["#F7D5BD","#EDBE9C","#D49A73","#A8704E","#7A4C33"]
 HAIR=["#3A2230","#5B3A2A","#1F1A2E","#B5643C","#E8C07A","#6B4A8A"]
-COAT={"kis":["#E2574C","#4F5BB8","#2F7D6D","#E8A33B","#9A5FB5","#F2F0EA"],"yagmur":["#F2C14E","#E2574C","#4FA3B8","#7A9A5A","#3A4A78"],"bahar":["#F28AAE","#7FC8A9","#F7D44A","#8FB8F2","#FFFFFF","#C9A0F0"],"sonbahar":["#C9563A","#E8A33B","#6B7F3A","#7B4F6B","#3F6672"]}[S]
+COAT={"kis":["#E2574C","#4F5BB8","#2F7D6D","#E8A33B","#9A5FB5","#F2F0EA"],"yagmur":["#F2C14E","#E2574C","#4FA3B8","#7A9A5A","#3A4A78"],"bahar":["#F28AAE","#7FC8A9","#F7D44A","#8FB8F2","#FFFFFF","#C9A0F0"],"sonbahar":["#C9563A","#E8A33B","#6B7F3A","#7B4F6B","#3F6672"],"ramazan":["#2F6F73","#C9563A","#E8A33B","#8A4F5E","#F2F0EA","#4F5BB8"],"yaz":["#FFFFFF","#F7D44A","#7FC8A9","#F28AAE","#8FB8F2","#F2A65A"]}[S]
 UMB=["#E2574C","#F2C14E","#4FA3B8","#9A5FB5","#2F7D6D","#F28AAE"]
 def chibi(s,front=True,kind="adult"):
     # local origin = feet center; returns svg (normal) and parts for night overlay
@@ -378,6 +423,35 @@ for (di,jj,rev) in [(1,ROAD_J+.3,False),(1,ROAD_J+.7,True),(0,ROAD_I+.3,True),(0
         if rev: a,b=b,a
         kf.append(f".car{cid}{{animation:car{cid} {dur:.3f}s linear infinite;animation-delay:{-random.random()*dur:.2f}s}}@keyframes car{cid}{{0%{{transform:{a}}}100%{{transform:{b}}}}}")
         cars.append(f'<g class="car{cid}">{g}</g>')
+# --- garlands (Ramazan fenerleri / yaz ampulleri)
+if RAMA or YAZ:
+    random.seed(8)
+    for gi in (0.55,1.6,2.55,4.5,5.5,6.45):
+        a=up(P(gi,ROAD_J-.06),24*K); b=up(P(gi,ROAD_J+1.06),24*K)
+        mid=((a[0]+b[0])/2,(a[1]+b[1])/2+12*K)
+        g=f'<line x1="{f(a[0])}" y1="{f(a[1])}" x2="{f(a[0])}" y2="{f(a[1]+24*K)}" stroke="#4A3A55" stroke-width="1"></line><line x1="{f(b[0])}" y1="{f(b[1])}" x2="{f(b[0])}" y2="{f(b[1]+24*K)}" stroke="#4A3A55" stroke-width="1"></line>'
+        g+=f'<path d="M {f(a[0])} {f(a[1])} Q {f(mid[0])} {f(mid[1])} {f(b[0])} {f(b[1])}" fill="none" stroke="#4A3A55" stroke-opacity=".7" stroke-width=".7"></path>'
+        n=7
+        for k in range(1,n):
+            u=k/n; x=(1-u)**2*a[0]+2*(1-u)*u*mid[0]+u*u*b[0]; y=(1-u)**2*a[1]+2*(1-u)*u*mid[1]+u*u*b[1]
+            if RAMA:
+                c=["#E2574C","#F2C14E","#2F9E8F","#4F5BB8","#E8A33B"][k%5]
+                L=f'<g class="lan" style="animation-delay:{-random.random()*2:.2f}s"><line x1="{f(x)}" y1="{f(y)}" x2="{f(x)}" y2="{f(y+1.6*K)}" stroke="#4A3A55" stroke-width=".5"></line><ellipse cx="{f(x)}" cy="{f(y+4*K)}" rx="{f(2*K)}" ry="{f(2.7*K)}" fill="{c}"></ellipse><rect x="{f(x-1.3*K)}" y="{f(y+1.3*K)}" width="{f(2.6*K)}" height="{f(.9*K)}" fill="#D9A441"></rect><rect x="{f(x-1.3*K)}" y="{f(y+6.4*K)}" width="{f(2.6*K)}" height="{f(.9*K)}" fill="#D9A441"></rect><ellipse class="lg" cx="{f(x)}" cy="{f(y+4*K)}" rx="{f(1.1*K)}" ry="{f(1.6*K)}" fill="#FFF1C2"></ellipse></g>'
+                bloom.append(f'<ellipse class="lampc" cx="{f(x)}" cy="{f(y+4*K)}" rx="{f(2.4*K)}" ry="{f(3*K)}"></ellipse>')
+            else:
+                L=f'<circle class="bulb" cx="{f(x)}" cy="{f(y+1.4*K)}" r="{f(1.3*K)}"></circle>'
+                bloom.append(f'<circle class="lampc" cx="{f(x)}" cy="{f(y+1.4*K)}" r="{f(1.8*K)}"></circle>')
+            g+=L
+        items.append(((ROAD_J+.5,gi),f'<g>{g}</g>'))
+    random.seed(23)
+if YAZ:
+    random.seed(12); ff=[]
+    for (ci,cj) in [(6,4),(1,5),(0,1),(5,6),(0,4),(1,4),(2,4)]:
+        for _ in range(5):
+            x,y=P(ci+random.uniform(.1,.9),cj+random.uniform(.1,.9)); y-=random.uniform(4,22)*K
+            ff.append(f'<g class="ffw" style="animation-delay:{-random.random()*4:.2f}s;animation-duration:{random.uniform(3,5):.2f}s"><circle class="ff" cx="{f(x)}" cy="{f(y)}" r="{f(1.1*K)}" style="animation-delay:{-random.random()*1.4:.2f}s"></circle></g>')
+    extras.append("".join(ff)); bloom.extend(ff)
+    random.seed(23)
 # insert walkers into depth order (key by j)
 items.append(((ROAD_J-.05,99),"".join(walkers_back)))
 items.append(((ROAD_J+.5,99),"".join(walkers_front)))
@@ -426,6 +500,49 @@ interior=f'''<g transform="{hi['m']}">
 {"".join("<line class='drip' x1='%s' y1='%s' x2='%s' y2='%s' stroke='#DCE8F4' stroke-opacity='.55' stroke-width='%s' style='animation-delay:-%.2fs'></line>"%(X(u),Y(.05),X(u),Y(.2),Y(.012),random.random()*2) for u in (.32,.58,.71,.9)) if RAIN else ""}
 <rect x="{X(-.04)}" y="{Y(.98)}" width="{X(1.08)}" height="{Y(.07)}" fill="{"#FFFFFF" if SNOW else "#FFF4E8"}"></rect>
 </g>'''
+
+def chib_face(cx,cy,r,hair,skin="#F7D5BD",bun=False,kid=False):
+    o=f'<circle cx="{f(cx)}" cy="{f(cy)}" r="{f(r)}" fill="{skin}"></circle>'
+    o+=f'<path d="M {f(cx-r*1.04)} {f(cy+r*.1)} Q {f(cx-r*1.05)} {f(cy-r*1.25)} {f(cx)} {f(cy-r*1.15)} Q {f(cx+r*1.05)} {f(cy-r*1.25)} {f(cx+r*1.04)} {f(cy+r*.1)} Q {f(cx+r*.5)} {f(cy-r*.62)} {f(cx-r*.1)} {f(cy-r*.5)} Q {f(cx-r*.7)} {f(cy-r*.42)} {f(cx-r*1.04)} {f(cy+r*.1)} Z" fill="{hair}"></path>'
+    if bun: o+=f'<circle cx="{f(cx)}" cy="{f(cy-r*1.25)}" r="{f(r*.38)}" fill="{hair}"></circle>'
+    o+=f'<g class="blinkE"><circle cx="{f(cx-r*.36)}" cy="{f(cy+r*.12)}" r="{f(r*.11)}" fill="#2B1B2A"></circle><circle cx="{f(cx+r*.36)}" cy="{f(cy+r*.12)}" r="{f(r*.11)}" fill="#2B1B2A"></circle></g>'
+    o+=f'<ellipse cx="{f(cx-r*.62)}" cy="{f(cy+r*.45)}" rx="{f(r*.2)}" ry="{f(r*.12)}" fill="#F48FA0" fill-opacity=".85"></ellipse><ellipse cx="{f(cx+r*.62)}" cy="{f(cy+r*.45)}" rx="{f(r*.2)}" ry="{f(r*.12)}" fill="#F48FA0" fill-opacity=".85"></ellipse>'
+    o+=f'<path d="M {f(cx-r*.16)} {f(cy+r*.5)} Q {f(cx)} {f(cy+r*.68)} {f(cx+r*.16)} {f(cy+r*.5)}" fill="none" stroke="#2B1B2A" stroke-width="{f(r*.06)}" stroke-linecap="round"></path>'
+    return o
+if RAMA:
+    interior=f"""<g transform="{hi['m']}">
+<rect x="0" y="0" width="{X(1)}" height="{Y(1)}" fill="url(#room)"></rect>
+<g class="lampp"><line x1="{X(.5)}" y1="0" x2="{X(.5)}" y2="{Y(.14)}" stroke="#3A2230" stroke-width="{Y(.008)}"></line><path d="M {X(.47)} {Y(.14)} L {X(.53)} {Y(.14)} L {X(.55)} {Y(.26)} L {X(.5)} {Y(.31)} L {X(.45)} {Y(.26)} Z" fill="#D9A441"></path><circle cx="{X(.5)}" cy="{Y(.22)}" r="{Y(.18)}" fill="url(#lampglow)"></circle></g>
+<g fill="#F2C14E" fill-opacity=".8"><circle cx="{X(.2)}" cy="{Y(.2)}" r="{Y(.07)}"></circle><circle cx="{X(.215)}" cy="{Y(.185)}" r="{Y(.062)}" fill="#E07A5F" fill-opacity="1"></circle><path d="M {X(.27)} {Y(.14)} l {Y(.012)} {Y(.03)} l {Y(.03)} 0 l {Y(-.024)} {Y(.02)} l {Y(.01)} {Y(.03)} l {Y(-.028)} {Y(-.018)} l {Y(-.028)} {Y(.018)} l {Y(.01)} {Y(-.03)} l {Y(-.024)} {Y(-.02)} l {Y(.03)} 0 Z"></path></g>
+{chib_face(w*.36,hh*.46,hh*.13,"#3A2230",bun=True)}
+<path d="M {X(.28)} {Y(.78)} C {X(.28)} {Y(.62)} {X(.31)} {Y(.58)} {X(.36)} {Y(.58)} C {X(.41)} {Y(.58)} {X(.44)} {Y(.62)} {X(.44)} {Y(.78)} Z" fill="#2F6F73"></path>
+{chib_face(w*.62,hh*.52,hh*.11,"#5B3A2A",kid=True)}
+<path d="M {X(.55)} {Y(.78)} C {X(.55)} {Y(.66)} {X(.58)} {Y(.63)} {X(.62)} {Y(.63)} C {X(.66)} {Y(.63)} {X(.69)} {Y(.66)} {X(.69)} {Y(.78)} Z" fill="#F2C14E"></path>
+<rect x="{X(.14)}" y="{Y(.74)}" width="{X(.74)}" height="{Y(.06)}" rx="{Y(.02)}" fill="#FFF8EC"></rect><rect x="{X(.14)}" y="{Y(.8)}" width="{X(.74)}" height="{Y(.14)}" fill="#C9563A"></rect><path d="M {X(.14)} {Y(.8)} L {X(.88)} {Y(.8)} L {X(.88)} {Y(.86)} Q {X(.51)} {Y(.9)} {X(.14)} {Y(.86)} Z" fill="#E07A5F"></path>
+<ellipse cx="{X(.24)}" cy="{Y(.735)}" rx="{X(.06)}" ry="{Y(.035)}" fill="#E8A33B"></ellipse><path d="M {X(.2)} {Y(.73)} l {X(.08)} 0" stroke="#B5743A" stroke-width="{Y(.008)}"></path>
+<path d="M {X(.44)} {Y(.72)} Q {X(.5)} {Y(.8)} {X(.56)} {Y(.72)} Z" fill="#F7F1E6"></path><ellipse cx="{X(.5)}" cy="{Y(.72)}" rx="{X(.06)}" ry="{Y(.018)}" fill="#E07A2F"></ellipse>
+<g class="steam" fill="none" stroke="#FFF8EC" stroke-opacity=".85" stroke-width="{Y(.012)}" stroke-linecap="round"><path d="M {X(.48)} {Y(.68)} q {X(.012)} {Y(-.05)} 0 {Y(-.1)}"></path><path d="M {X(.52)} {Y(.67)} q {X(.012)} {Y(-.05)} 0 {Y(-.1)}"></path></g>
+<ellipse cx="{X(.72)}" cy="{Y(.735)}" rx="{X(.05)}" ry="{Y(.02)}" fill="#F7F1E6"></ellipse><g fill="#6B3B2A"><ellipse cx="{X(.705)}" cy="{Y(.725)}" rx="{X(.012)}" ry="{Y(.012)}"></ellipse><ellipse cx="{X(.725)}" cy="{Y(.72)}" rx="{X(.012)}" ry="{Y(.012)}"></ellipse><ellipse cx="{X(.74)}" cy="{Y(.728)}" rx="{X(.012)}" ry="{Y(.012)}"></ellipse></g>
+<rect x="{X(.81)}" y="{Y(.66)}" width="{X(.035)}" height="{Y(.08)}" fill="#DCEEF5" fill-opacity=".85"></rect>
+<rect x="0" y="0" width="{X(.1)}" height="{Y(1)}" fill="#2F6F73" fill-opacity=".85"></rect><rect x="{X(.9)}" y="0" width="{X(.1)}" height="{Y(1)}" fill="#2F6F73" fill-opacity=".85"></rect>
+<rect x="0" y="0" width="{X(1)}" height="{Y(1)}" fill="none" stroke="#FFF4E8" stroke-width="{Y(.04)}"></rect>
+<rect x="{X(-.04)}" y="{Y(.98)}" width="{X(1.08)}" height="{Y(.07)}" fill="#FFF4E8"></rect>
+</g>"""
+if YAZ:
+    interior=f"""<g transform="{hi['m']}">
+<rect x="0" y="0" width="{X(1)}" height="{Y(1)}" fill="url(#room)"></rect>
+<rect x="{X(.08)}" y="{Y(.12)}" width="{X(.2)}" height="{Y(.26)}" fill="#F7F1E6" fill-opacity=".8"></rect><path d="M {X(.1)} {Y(.34)} L {X(.15)} {Y(.22)} L {X(.19)} {Y(.29)} L {X(.22)} {Y(.25)} L {X(.26)} {Y(.34)} Z" fill="#7FC8A9"></path><circle cx="{X(.22)}" cy="{Y(.18)}" r="{Y(.025)}" fill="#F2C14E"></circle>
+{chib_face(w*.46,hh*.42,hh*.15,"#B5643C")}
+<path d="M {X(.37)} {Y(.86)} C {X(.37)} {Y(.64)} {X(.41)} {Y(.58)} {X(.46)} {Y(.58)} C {X(.51)} {Y(.58)} {X(.55)} {Y(.64)} {X(.55)} {Y(.86)} Z" fill="#F7D44A"></path>
+<rect x="{X(.53)}" y="{Y(.6)}" width="{X(.035)}" height="{Y(.11)}" rx="{Y(.01)}" fill="#FFF8EC" fill-opacity=".9"></rect><rect x="{X(.533)}" y="{Y(.64)}" width="{X(.029)}" height="{Y(.065)}" fill="#F2C14E"></rect><line x1="{X(.555)}" y1="{Y(.6)}" x2="{X(.565)}" y2="{Y(.54)}" stroke="#E2574C" stroke-width="{Y(.008)}"></line>
+<g><line x1="{X(.76)}" y1="{Y(.84)}" x2="{X(.76)}" y2="{Y(.56)}" stroke="#3A2230" stroke-width="{Y(.02)}"></line><ellipse cx="{X(.76)}" cy="{Y(.86)}" rx="{X(.05)}" ry="{Y(.02)}" fill="#3A2230"></ellipse><circle cx="{X(.76)}" cy="{Y(.48)}" r="{Y(.13)}" fill="none" stroke="#3A2230" stroke-width="{Y(.012)}"></circle>
+<g class="fan"><ellipse cx="{X(.76)}" cy="{Y(.40)}" rx="{Y(.035)}" ry="{Y(.08)}" fill="#8FB8F2"></ellipse><ellipse cx="{X(.76)}" cy="{Y(.56)}" rx="{Y(.035)}" ry="{Y(.08)}" fill="#8FB8F2"></ellipse><ellipse cx="{f(w*.76-hh*.08)}" cy="{Y(.48)}" rx="{Y(.08)}" ry="{Y(.035)}" fill="#8FB8F2"></ellipse><ellipse cx="{f(w*.76+hh*.08)}" cy="{Y(.48)}" rx="{Y(.08)}" ry="{Y(.035)}" fill="#8FB8F2"></ellipse></g><circle cx="{X(.76)}" cy="{Y(.48)}" r="{Y(.025)}" fill="#3A2230"></circle></g>
+<g class="cat"><ellipse cx="{X(.2)}" cy="{Y(.93)}" rx="{X(.08)}" ry="{Y(.05)}" fill="#F7F1E6"></ellipse><circle cx="{X(.27)}" cy="{Y(.9)}" r="{Y(.055)}" fill="#F7F1E6"></circle><path d="M {X(.25)} {Y(.86)} l {X(.006)} {Y(-.05)} l {X(.014)} {Y(.035)} Z M {X(.28)} {Y(.855)} l {X(.01)} {Y(-.05)} l {X(.01)} {Y(.05)} Z" fill="#F7F1E6"></path><path d="M {X(.255)} {Y(.9)} q {X(.006)} {Y(.012)} {X(.012)} 0 M {X(.276)} {Y(.9)} q {X(.006)} {Y(.012)} {X(.012)} 0" fill="none" stroke="#2B1B2A" stroke-width="{Y(.008)}"></path><path class="tail" d="M {X(.12)} {Y(.95)} q {X(-.04)} {Y(-.02)} {X(-.02)} {Y(-.13)}" fill="none" stroke="#F7F1E6" stroke-width="{Y(.03)}" stroke-linecap="round"></path></g>
+<path class="curtain" d="M 0 0 L {X(.12)} 0 Q {X(.16)} {Y(.5)} {X(.1)} {Y(1)} L 0 {Y(1)} Z" fill="#FFFFFF" fill-opacity=".75"></path><path class="curtain2" d="M {X(1)} 0 L {X(.88)} 0 Q {X(.84)} {Y(.5)} {X(.9)} {Y(1)} L {X(1)} {Y(1)} Z" fill="#FFFFFF" fill-opacity=".75"></path>
+<rect x="0" y="0" width="{X(1)}" height="{Y(1)}" fill="none" stroke="#FFF4E8" stroke-width="{Y(.04)}"></rect>
+<rect x="{X(-.04)}" y="{Y(.98)}" width="{X(1.08)}" height="{Y(.07)}" fill="#FFF4E8"></rect>
+<g fill="#3E7A63"><rect x="{X(.62)}" y="{Y(1.0)}" width="{X(.12)}" height="{Y(.08)}" fill="#C96B4E"></rect><circle cx="{X(.65)}" cy="{Y(.97)}" r="{Y(.06)}"></circle><circle cx="{X(.71)}" cy="{Y(.96)}" r="{Y(.07)}"></circle><circle cx="{X(.66)}" cy="{Y(.93)}" r="{Y(.02)}" fill="#F28AAE"></circle><circle cx="{X(.72)}" cy="{Y(.92)}" r="{Y(.02)}" fill="#F7D44A"></circle></g>
+</g>"""
 kz=13.0 if mode=="v" else 9.0
 tx=W/2-kz*hi["cx"]; ty=(H*0.42 if mode=="v" else H*0.46)-kz*hi["cy"]
 cam_end=f"translate({tx:.1f}px,{ty:.1f}px) scale({kz})"
@@ -437,6 +554,9 @@ c1=camAt(1,dcx,dcy,dcx,dcy)
 fx,fy=P(1.7,ROAD_J+.55)
 sa=camAt(stz,fx,fy,W*0.5,H*(0.5 if mode=="v" else 0.55)); sb=camAt(stz*1.1,fx+26*K,fy+12*K,W*0.5,H*(0.5 if mode=="v" else 0.55))
 camkf=("@keyframes cam{0%{transform:"+c0+";animation-timing-function:cubic-bezier(.3,0,.2,1)}22%{transform:"+c1+";animation-timing-function:cubic-bezier(.6,0,.3,1)}32%{transform:"+sa+";animation-timing-function:linear}63%{transform:"+sb+";animation-timing-function:cubic-bezier(.7,0,.2,1)}95%,100%{transform:"+cam_end+"}}")
+if RAMA or YAZ:
+    c1n=camAt(1.22,dcx,dcy-20*K,dcx,dcy+(40 if mode=="v" else 10))
+    camkf=("@keyframes cam{0%{transform:"+c0+";animation-timing-function:cubic-bezier(.3,0,.2,1)}22%{transform:"+c1+";animation-timing-function:cubic-bezier(.6,0,.3,1)}32%{transform:"+sa+";animation-timing-function:linear}52%{transform:"+sb+";animation-timing-function:cubic-bezier(.6,0,.3,1)}61%{transform:"+c1n+";animation-timing-function:linear}72%{transform:"+camAt(1.3,dcx,dcy-20*K,dcx,dcy+(40 if mode=="v" else 10))+";animation-timing-function:cubic-bezier(.7,0,.2,1)}95%,100%{transform:"+cam_end+"}}")
 # weather particles (screen space)
 random.seed(5); wx=[]
 if SNOW:
@@ -447,16 +567,26 @@ elif RAIN:
     for _ in range(170 if mode=="v" else 200):
         x=random.uniform(-60,W+40); L_=random.uniform(14,26); d=random.choice([.5,.625,.8333,1.0]); dl=-random.random()*d
         wx.append(f'<line class="rain" x1="{x:.0f}" y1="-30" x2="{x-L_*.25:.0f}" y2="{-30+L_:.0f}" stroke="#DCE8F4" stroke-opacity="{random.uniform(.35,.7):.2f}" stroke-width="1" style="animation-duration:{d}s;animation-delay:{dl:.2f}s"></line>')
-else:
+elif S in ("bahar","sonbahar"):
     cols=["#F7B6C8","#FBD3DF","#FFFFFF"] if S=="bahar" else ["#E07A2F","#F2B544","#C9483A","#D9A12B"]
     for _ in range(46 if mode=="v" else 56):
         x=random.uniform(-40,W); d=random.choice([5,10/3,10]); dl=-random.random()*d; c=random.choice(cols)
         shape=(f'<ellipse cx="0" cy="0" rx="3.2" ry="1.8" fill="{c}"></ellipse>' if S=="bahar" else f'<path d="M -4 0 Q 0 -3 4 0 Q 0 3 -4 0 Z" fill="{c}"></path><line x1="-4" y1="0" x2="4" y2="0" stroke="#8A4A2A" stroke-width=".4"></line>')
         wx.append(f'<g class="fall2" style="animation-duration:{d:.3f}s;animation-delay:{dl:.2f}s"><g transform="translate({x:.0f} -20)"><g class="spin" style="animation-delay:{-random.random()*2:.2f}s">{shape}</g></g></g>')
+
+fw=[]
+if YAZ:
+    random.seed(31)
+    spots=[(W*.22,H*.14,5.9,"#F28AAE"),(W*.76,H*.1,6.3,"#F7D44A"),(W*.52,H*.18,6.75,"#7FDBFF"),(W*.32,H*.08,7.1,"#FFFFFF"),(W*.68,H*.2,7.5,"#F2A65A")] if mode=="v" else [(W*.18,H*.16,5.9,"#F28AAE"),(W*.82,H*.14,6.3,"#F7D44A"),(W*.56,H*.1,6.75,"#7FDBFF"),(W*.36,H*.08,7.1,"#FFFFFF"),(W*.7,H*.22,7.5,"#F2A65A")]
+    for n_,(x,y,t0,c) in enumerate(spots):
+        rays="".join(f'<line x1="{x+math.cos(a)*6:.1f}" y1="{y+math.sin(a)*6:.1f}" x2="{x+math.cos(a)*34:.1f}" y2="{y+math.sin(a)*34+4:.1f}" stroke="{c}" stroke-width="1.6" stroke-linecap="round" pathLength="1"></line>' for a in [k*2*math.pi/18 for k in range(18)])
+        p=t0*10
+        kf.append(f".fw{n_}{{opacity:0;transform-box:fill-box;transform-origin:center;animation:fw{n_} 10s linear infinite}}@keyframes fw{n_}{{0%,{p:.1f}%{{opacity:0;transform:scale(.2)}}{p+.6:.1f}%{{opacity:1;transform:scale(.6)}}{p+5:.1f}%{{opacity:.9;transform:scale(1)}}{p+9:.1f}%,100%{{opacity:0;transform:scale(1.15) translateY(6px)}}}}")
+        fw.append(f'<g class="fw{n_}">{rays}<circle cx="{x:.1f}" cy="{y:.1f}" r="3" fill="{c}"></circle></g>')
 tpl=open(sys.argv[3]).read()
 rep={"%GROUND%":"\n".join(ground),"%SHADOWS%":"\n".join(shadows),"%ITEMS%":"\n".join(x for _,x in items),
 "%CARS%":"\n".join(cars),"%LAMPGLOW%":"\n".join(pools),"%REFL%":"\n".join(refl),"%HERO%":interior,"%KF%":"\n".join(kf),"%CAMEND%":cam_end,
-"%W%":str(W),"%H%":str(H),"%GROUNDCLIP%":pts(G),"%WX%":"\n".join(wx),"%SHCOL%":CFG["shadow"]}
+"%W%":str(W),"%H%":str(H),"%GROUNDCLIP%":pts(G),"%WX%":"\n".join(wx),"%SHCOL%":CFG["shadow"],"%BLOOM%":"\n".join(bloom),"%EXTRAS%":"\n".join(extras),"%FW%":"\n".join(fw)}
 for k,v in rep.items(): tpl=tpl.replace(k,v)
 import re as _re
 tpl=_re.sub(r"@keyframes cam\{.*?\}\}",camkf,tpl,count=1,flags=_re.S)

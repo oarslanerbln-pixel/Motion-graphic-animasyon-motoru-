@@ -4,7 +4,7 @@
 set -e
 cd "$(dirname "$0")"
 OUT=${1:-out}; mkdir -p "$OUT"
-for se in kis yagmur bahar sonbahar; do
+for se in kis yagmur bahar sonbahar ramazan yaz; do
   for m in v h; do
     python3 build3.py $m $se
     python3 iso3.py $m $se iso3_${m}_${se}.html > "$OUT/Izo3_${se}_${m}.dc.html"

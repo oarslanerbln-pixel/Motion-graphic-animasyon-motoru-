@@ -53,7 +53,7 @@ a{color:#F4A35B}a:hover{color:#C77A35}
 @keyframes sway{0%{transform:rotate(-2.5deg)}100%{transform:rotate(2.5deg)}}
 %KF%
 .sun{animation:sun 10s linear infinite}
-@keyframes sun{0%{transform:translate(-60px,140px)}20%{transform:translate(0,-10px)}40%,100%{transform:translate(120px,260px)}}
+%SUNKF%
 .sunc{animation:sunc 10s linear infinite}
 @keyframes sunc{0%{fill:#FF9F6E}20%{fill:#FFE6A0}38%,100%{fill:#FF6F4E}}
 .moon{animation:moon 10s cubic-bezier(.2,.8,.3,1) infinite}
@@ -107,6 +107,25 @@ a{color:#F4A35B}a:hover{color:#C77A35}
 .flash{opacity:0;background:#EEF3FF;pointer-events:none;animation:flash 10s linear infinite}
 @keyframes flash{0%,56.5%{opacity:0}57%{opacity:%FLASH%}57.8%{opacity:0}58.6%{opacity:calc(%FLASH% * .6)}59.4%,100%{opacity:0}}
 .wx{%WXSTYLE%}
+.mahya{opacity:.2;animation:mahya 10s linear infinite}
+@keyframes mahya{0%,40%{opacity:.2}44%{opacity:1}100%{opacity:1}}
+.lan{transform-box:fill-box;transform-origin:50% 0;animation:sway 2.4s ease-in-out infinite alternate}
+.bulb{fill:#9A917E;animation:bulb 10s linear infinite}
+@keyframes bulb{0%,40%{fill:#9A917E}46%,100%{fill:#FFE9A8}}
+.ff{fill:#E9FF8A;animation:ffb 1.4s ease-in-out infinite alternate}
+@keyframes ffb{0%{opacity:.05}100%{opacity:1}}
+.ffw{animation-name:ffw;animation-timing-function:ease-in-out;animation-iteration-count:infinite;animation-direction:alternate}
+@keyframes ffw{0%{transform:translate(0,0)}50%{transform:translate(5px,-4px)}100%{transform:translate(-4px,2px)}}
+.fan{transform-box:fill-box;transform-origin:center;animation:fanr .45s linear infinite}
+@keyframes fanr{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.curtain{transform-box:fill-box;transform-origin:0 0;animation:curt 2.6s ease-in-out infinite alternate}
+.curtain2{transform-box:fill-box;transform-origin:100% 0;animation:curt2 2.6s ease-in-out infinite alternate}
+@keyframes curt{0%{transform:skewX(0)}100%{transform:skewX(5deg)}}
+@keyframes curt2{0%{transform:skewX(0)}100%{transform:skewX(-5deg)}}
+.bloomL{opacity:0;animation:bloomL 10s linear infinite}
+@keyframes bloomL{0%,38%{opacity:0}48%,100%{opacity:.9}}
+.grain{animation:grain .5s steps(4,end) infinite}
+@keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-14px,9px)}50%{transform:translate(11px,-7px)}75%{transform:translate(-6px,-12px)}100%{transform:translate(0,0)}}
 .heroin{opacity:0;animation:heroin 10s linear infinite}
 @keyframes heroin{0%,42%{opacity:0}47%,100%{opacity:1}}
 .reader{animation:reader 10s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
@@ -151,7 +170,11 @@ a{color:#F4A35B}a:hover{color:#C77A35}
   <svg class="L" width="%W%" height="%H%" viewBox="0 0 %W% %H%" aria-hidden="true">
     <g class="sun" style="%SUNDISP%"><circle cx="%SUNX%" cy="%SUNY%" r="70" fill="#FFE6A0" fill-opacity=".25"></circle><circle class="sunc" cx="%SUNX%" cy="%SUNY%" r="40"></circle></g>
     <g class="moon"><circle cx="%MOONX%" cy="%MOONY%" r="60" fill="#FFF3D6" fill-opacity=".08"></circle><circle cx="%MOONX%" cy="%MOONY%" r="26" fill="#FFF3D6"></circle><circle cx="%MOONX2%" cy="%MOONY2%" r="23" fill="#1C2257"></circle></g>
+    <defs><radialGradient id="hglow"><stop offset="0" stop-color="%HGLOW%" stop-opacity=".55"></stop><stop offset="1" stop-color="%HGLOW%" stop-opacity="0"></stop></radialGradient></defs>
+    <ellipse class="stars" cx="%HX%" cy="%HY%" rx="%HRX%" ry="%HRY%" fill="url(#hglow)"></ellipse>
     <g class="stars" fill="#FFF3D6">%STARS%</g>
+    %SKYEXTRA%
+    %FW%
     <g class="cloud">%CLOUDS%</g>
     <g class="birds" fill="none" stroke="#3C2846" stroke-width="1.6" stroke-linecap="round">%BIRDS%</g>
   </svg>
@@ -162,6 +185,7 @@ a{color:#F4A35B}a:hover{color:#C77A35}
       <radialGradient id="pool"><stop offset="0" stop-color="#FFD98A" stop-opacity=".75"></stop><stop offset="1" stop-color="#FFD98A" stop-opacity="0"></stop></radialGradient>
       <radialGradient id="halo"><stop offset="0" stop-color="#FFE7A8" stop-opacity=".9"></stop><stop offset="1" stop-color="#FFE7A8" stop-opacity="0"></stop></radialGradient>
       <linearGradient id="streak" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE7A8" stop-opacity=".7"></stop><stop offset="1" stop-color="#FFE7A8" stop-opacity="0"></stop></linearGradient>
+      <linearGradient id="cone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE7A8" stop-opacity=".55"></stop><stop offset="1" stop-color="#FFE7A8" stop-opacity="0"></stop></linearGradient>
       <radialGradient id="beam"><stop offset="0" stop-color="#FFF1C2" stop-opacity=".85"></stop><stop offset="1" stop-color="#FFF1C2" stop-opacity="0"></stop></radialGradient>
       <clipPath id="gclip"><polygon points="%GROUNDCLIP%"></polygon></clipPath>
     </defs>
@@ -172,8 +196,13 @@ a{color:#F4A35B}a:hover{color:#C77A35}
       <g class="pool">%REFL%</g>
       <g clip-path="url(#gclip)">%CARS%</g>
       %ITEMS%
+      <g class="pool">%EXTRAS%</g>
     </g>
   </svg>
+
+  <div class="L bloomL" style="filter: blur(5px); mix-blend-mode: screen">
+    <svg class="L dof" width="%W%" height="%H%" viewBox="0 0 %W% %H%" aria-hidden="true"><g class="cam">%BLOOM%</g></svg>
+  </div>
 
   <svg class="L" width="%W%" height="%H%" viewBox="0 0 %W% %H%" aria-hidden="true">
     <defs>
@@ -186,6 +215,8 @@ a{color:#F4A35B}a:hover{color:#C77A35}
   <svg class="L wx" width="%W%" height="%H%" viewBox="0 0 %W% %H%" aria-hidden="true">%WX%</svg>
   <div class="L flash"></div>
 
+  <div class="L" style="pointer-events: none; background: radial-gradient(120% 90% at 50% 45%, transparent 58%, rgba(14,10,36,.38) 100%)"></div>
+  <svg class="L" width="%W%" height="%H%" viewBox="0 0 %W% %H%" aria-hidden="true" style="pointer-events: none; opacity: .07; mix-blend-mode: overlay"><filter id="grn"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="5"></feTurbulence></filter><rect class="grain" x="-30" y="-30" width="%WG%" height="%HG%" filter="url(#grn)"></rect></svg>
 %UI%
 </div>
 </x-dc>
