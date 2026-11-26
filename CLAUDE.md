@@ -37,6 +37,7 @@ Kesinleşen eşleşmeleri bu tabloya işle.
 ## Futbol maç önü kanalı: KIRK SEKİZ (48)
 - **Logo (onaylandı 26.11.2026): "İ Noktası"** — Playfair Display 900 serif "48" + altın top; yazı logosu Manrope 800 "KIRK SEKİZ", SEKİZ'deki İ'nin noktası altın top. Palet: fildişi `#F4EFE6`, lacivert `#14213D`, altın `#B08A3E` (videoda koyu zeminde `#D4AF5A`). Üretici: `futbol/brand/brand.html` (`brand.mjs`).
 - **Tarafsız:** hiçbir takımın tarafı tutulmaz; "…'a başarılar" yok. Kapanış: "Skor tahminini yorumlara yaz; maçtan sonra birlikte bakalım."
+- **Format:** yatay uzun bölüm + dikey fragman (uzuna yönlendirir). **Analiz:** model arka planda (`futbol/model/`), ekranda/seste yüzde ve oran yok; anlatım "kim nasıl oynarsa avantajı alır".
 - Ses: Chatterbox (`futbol/tts_chatterbox.py`), ANALİST = Fahrettin tınısı, TRİBÜN = Fettah tınısı, `--tempo 1.05`. Gemini anahtarı gelirse `tts_gemini.py`.
 Strateji, bölüm şablonu ve üretim hattı: `docs/KANAL_FUTBOL.md` · Motor: `futbol/` (09 Taktik Tahta, video teması `neon`/lila). Taktik sahnesi veri dosyasındaki `beats` listesinden kurulur; kapanış yazısı `EP.wish` (sabit metin yok).
 Python Playwright yok; önizleme/render Node ile: `node futbol/prev.mjs`, `node futbol/render.mjs`.

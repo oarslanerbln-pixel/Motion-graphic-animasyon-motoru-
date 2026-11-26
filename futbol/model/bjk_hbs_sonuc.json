@@ -1,0 +1,85 @@
+{
+ "mac": "Beşiktaş – Hapoel Beer Sheva · UEFA Avrupa Ligi 5. hafta · 26.11.2026 · Batum (tarafsız)",
+ "simulasyon": 200000,
+ "lambda": {
+  "ev_ort": 2.44,
+  "dep_ort": 0.76,
+  "ev_aralik80": [
+   2.26,
+   2.61
+  ],
+  "dep_aralik80": [
+   0.58,
+   0.95
+  ]
+ },
+ "sonuc": {
+  "ev_galibiyet": 74.3,
+  "beraberlik": 16.8,
+  "dep_galibiyet": 8.9
+ },
+ "en_olasi_skorlar": [
+  {
+   "skor": "2-0",
+   "p": 11.0
+  },
+  {
+   "skor": "3-0",
+   "p": 9.4
+  },
+  {
+   "skor": "2-1",
+   "p": 9.2
+  },
+  {
+   "skor": "1-0",
+   "p": 8.7
+  },
+  {
+   "skor": "3-1",
+   "p": 7.8
+  },
+  {
+   "skor": "1-1",
+   "p": 7.7
+  }
+ ],
+ "ilk_yari_0_0": 23.3,
+ "ev_ilk_gol_30dk_once": 47.4,
+ "dep_bir_an_onde": 25.9,
+ "karsilikli_gol": 52.3,
+ "ust_2_5": 65.3,
+ "senaryolar": {
+  "ev_ilk": {
+   "p": 58.5,
+   "kosullu": {
+    "ev_galibiyet": 88.8,
+    "beraberlik": 8.7,
+    "dep_galibiyet": 2.6
+   }
+  },
+  "golsuz": {
+   "p": 23.5,
+   "kosullu": {
+    "ev_galibiyet": 60.3,
+    "beraberlik": 28.7,
+    "dep_galibiyet": 11.0
+   }
+  },
+  "dep_ilk": {
+   "p": 18.0,
+   "kosullu": {
+    "ev_galibiyet": 45.8,
+    "beraberlik": 27.4,
+    "dep_galibiyet": 26.7
+   }
+  }
+ },
+ "varsayimlar": [
+  "VARSAYIM: ClubElo kaydı yok; İsrail üst sıra takımlarının tipik aralığı, geniş belirsizlikle",
+  "Tarafsız saha, ama tribün ağırlıklı Türk (Batum–Sarp ≈20 km): normal ev avantajının (~65) yaklaşık yarısı",
+  "Beşiktaş'ta iki stoper eksik (Agbadou sakat, Ümit Akdağ cezalı): savunmaya küçük ceza — VARSAYIM",
+  "7°C, açık, yağış %0 (Open-Meteo): etkisi nötr kabul edildi",
+  "Form ağırlığı %25 (4 maç küçük örnek)"
+ ]
+}

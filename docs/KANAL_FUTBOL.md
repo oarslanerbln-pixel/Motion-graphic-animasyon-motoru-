@@ -148,3 +148,10 @@ node futbol/render.mjs --ep pilot_bjk_hbs --fmt v --audio out/pilot_bjk_hbs/mix.
 3. Sunucu sesleri: Gemini (Charon/Puck) mi, ElevenLabs mi? A/B dinleme testi yapılacak.
 4. Gemini API anahtarı ve ağ izni (`generativelanguage.googleapis.com`), hava durumu için `api.open-meteo.com`.
 5. 2026-27 sezonunda hangi Türk takımlarının hangi turnuvada olduğu ve fikstür. Takvim resmî UEFA sayfasından çıkarılacak.
+
+## 8. Format ve analiz ilkeleri (26.11.2026 kararları)
+- **Yatay = uzun bölüm** (YouTube ana içerik, 4–8 dk, bölüm başlıklı, chapter zaman damgalı). **Dikey = fragman** (≈25 sn): merak uyandırır, cevabı vermez, sonda "TAM ANALİZ · KANALDA" kartıyla uzun videoya yönlendirir.
+- **Analiz motoru:** `futbol/model/mac_modeli.py` — Elo ön gücü + küçük örneğe büzülmüş güncel form + bağlam (saha, tribün, eksikler, hava) + parametre belirsizliğiyle 200.000 dakikalık simülasyon + duyarlılık analizi. Girdi ve varsayımlar `futbol/model/<maç>.json` içinde, kaynaklı.
+- **Model arka planda kalır, anlatım taktiktir.** İzleyiciye yüzde, oran, "skor tahmini olasılığı" sunulmaz (kumar çağrışımı yok). Favori en fazla bir cümleyle, sayısız söylenir ("kâğıt üstünde favori X, ama…"). Senaryolar "kim nasıl oynarsa avantajı alır" diliyle anlatılır; kartlarda yüzde yerine **Avantaj: X / Denge** göstergesi.
+- Model, hangi senaryonun anlatılmaya değer olduğunu seçmek ve anlatımın abartıya kaçmasını önlemek için kullanılır (ör. "erken gol" yolunun maçı en çok belirlediği).
+- Doğrulanamayan bilgi söylenmez (ör. rakip teknik direktör adı, çelişkili skorlar → "ağır yenilgi").

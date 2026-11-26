@@ -50,7 +50,7 @@ function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >
 // ---------- fontlar (yerel @fontsource, latin + latin-ext) ----------
 const LAT = 'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD';
 const LEX = 'U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF';
-const FONTS = [['Unbounded', 'unbounded', [300, 500, 700, 800]], ['Manrope', 'manrope', [500, 700, 800]], ['JetBrains Mono', 'jetbrains-mono', [500, 700]]];
+const FONTS = [['Unbounded', 'unbounded', [300, 500, 700, 800]], ['Manrope', 'manrope', [500, 700, 800]], ['JetBrains Mono', 'jetbrains-mono', [500, 700]], ['Playfair Display', 'playfair-display', [900]]];
 let css = '';
 for (const [fam, dir, ws] of FONTS) for (const w of ws) for (const [sub, r] of [['latin', LAT], ['latin-ext', LEX]])
   css += `@font-face{font-family:'${fam}';font-weight:${w};font-display:block;src:url(../fonts/fontsource-${dir}/files/${dir}-${sub}-${w}-normal.woff2) format('woff2');unicode-range:${r}}\n`;
@@ -82,7 +82,7 @@ function buildTimeline() {
 }
 // segment si içinde key ile başlayan ilk kelimenin başlangıç zamanı
 function wT(si, key) {
-  const s = EP.segs[si]; const k = lowTR(key);
+  const s = EP.segs[si]; const k = lowTR(key).replace(/[^a-zçğıöşüâîû0-9]/g, '');
   const i = s.words.findIndex(w => lowTR(w).replace(/[^a-zçğıöşüâîû0-9]/g, '').startsWith(k));
   return i < 0 ? s.t0 : s.wt[i][0];
 }
@@ -565,7 +565,8 @@ SC.tactic = (c) => {
   B.forEach((b, i) => { b.end = i + 1 < B.length ? B[i + 1].cam + .3 : sc.t1 + 1; });
   const vStd = { yaw: 0, fx: 0, fy: 0, tilt: V ? .92 : .98, zm: 1, cy: V ? .45 : .50 };
   const base = { fx: 0, fy: 0, yaw: V ? .35 : -.25, tilt: .15, zm: .82, cy: V ? .45 : .50 };
-  const mv = [{ at: sc.t0, dur: 2.0, to: { yaw: 0, tilt: vStd.tilt, zm: 1 } }];
+  const t00 = sc.t0 + (sc.chapter ? 1.3 : 0), quick = B.length && B[0].cam - t00 < 1.5;
+  const mv = quick ? [] : [{ at: t00, dur: 2.0, to: { yaw: 0, tilt: vStd.tilt, zm: 1 } }];
   for (const b of B) {
     const nxt = b.end - .3, hold = Math.max(.5, nxt - b.cam - 1.6);
     if (b.k === 'rakip') {
@@ -671,7 +672,8 @@ SC.tactic = (c) => {
   const hy = V ? H * .14 : H * .165, hx = V ? W / 2 : 120 * U, al = V ? 'center' : 'left';
   if (!CLEAN) {
   maskText(sc.title || 'OYUN PLANI', hx, hy, F(800, (V ? 50 : 42) * U, 'Unbounded'), '#FFFFFF', win(lt, .2, 1), al, 2 * U);
-  maskText(sc.formation, V ? W / 2 : hx + 430 * U, V ? hy + 56 * U : hy, F(300, (V ? 40 : 42) * U, 'Unbounded'), TH.acc, win(lt, .5, 1.3), V ? 'center' : 'left');
+  g.font = F(800, (V ? 50 : 42) * U, 'Unbounded'); g.letterSpacing = 2 * U + 'px'; const ttw = g.measureText(sc.title || 'OYUN PLANI').width; g.letterSpacing = '0px';
+  maskText(sc.formation, V ? W / 2 : hx + ttw + 48 * U, V ? hy + 56 * U : hy, F(300, (V ? 40 : 42) * U, 'Unbounded'), TH.acc, win(lt, .5, 1.3), V ? 'center' : 'left');
   if (EP.lineupNote) maskText(EP.lineupNote, V ? W / 2 : hx, V ? hy + 182 * U : hy + 112 * U, F(500, 19 * U, 'JetBrains Mono'), TH.mut2, win(lt, .9, 1.7) * (1 - dim * 1.5), al, 2 * U);
   const cur = B.filter(b => T >= b.t - .1).length - 1;
   if (cur >= 0) {
@@ -697,8 +699,8 @@ SC.tactic = (c) => {
 SC.scen = (c) => {
   const { lt, a, sc, T } = c, si = sc.seg[0];
   g.save(); g.globalAlpha = a;
-  maskText('3 SENARYO', V ? W / 2 : 120 * U, V ? H * .17 : H * .17, F(800, (V ? 54 : 46) * U, 'Unbounded'), '#FFFFFF', win(lt, 0, .8), V ? 'center' : 'left', 2 * U);
-  maskText('kanal tahmini · kesinlik değil', V ? W / 2 : 120 * U, V ? H * .17 + 50 * U : H * .17 + 44 * U, F(500, 22 * U, 'JetBrains Mono'), TH.mut2, win(lt, .3, 1.1), V ? 'center' : 'left', 1 * U);
+  maskText(sc.title || '3 SENARYO', V ? W / 2 : 120 * U, V ? H * .17 : H * .17, F(800, (V ? 54 : 46) * U, 'Unbounded'), '#FFFFFF', win(lt, 0, .8), V ? 'center' : 'left', 2 * U);
+  maskText(sc.sub || 'kanal tahmini · kesinlik değil', V ? W / 2 : 120 * U, V ? H * .17 + 50 * U : H * .17 + 44 * U, F(500, 22 * U, 'JetBrains Mono'), TH.mut2, win(lt, .3, 1.1), V ? 'center' : 'left', 1 * U);
   const n = sc.items.length, cw = V ? 900 * U : 520 * U, ch = V ? 250 * U : 430 * U, gp = 30 * U;
   const x0 = V ? (W - cw) / 2 : (W - (n * cw + (n - 1) * gp)) / 2, y0 = V ? H * .24 : H * .29;
   if (TH.min) sc.items.forEach((it, i) => it.c = [TH.acc2, TH.acc, '#E58AA8'][i] || it.c);
@@ -713,8 +715,17 @@ SC.scen = (c) => {
     if (hp > 0) { rrect(x, y, cw, ch, 26 * U); g.strokeStyle = hexA(it.c, .9 * hp); g.lineWidth = 2.5 * U; g.stroke(); }
     const pad = 36 * U;
     g.textAlign = 'left'; g.fillStyle = it.c; g.font = F(300, 40 * U, 'Unbounded'); g.fillText('0' + (i + 1), x + pad, y + 70 * U);
-    g.fillStyle = '#FFFFFF'; g.font = F(800, (V ? 46 : 40) * U); g.fillText(it.t, x + pad + (V ? 100 * U : 0), y + (V ? 70 : 140) * U);
-    g.fillStyle = TH.mut; g.font = F(500, (V ? 26 : 24) * U); g.fillText(it.d, x + pad + (V ? 100 * U : 0), y + (V ? 112 : 186) * U);
+    const tx0 = x + pad + (V ? 100 * U : 0), tmw = cw - (tx0 - x) - pad;
+    g.fillStyle = '#FFFFFF'; g.font = F(800, fitPx(it.t, 800, 'Manrope', (V ? 46 : 40) * U, tmw)); g.fillText(it.t, tx0, y + (V ? 70 : 140) * U);
+    g.fillStyle = TH.mut; g.font = F(500, (V ? 26 : 24) * U); wrapText(it.d, tx0, y + (V ? 112 : 186) * U, tmw, (V ? 32 : 32) * U);
+    if (it.adv) {   // nitel avantaj göstergesi (yüzde yok)
+      const lab = it.adv === 'even' ? 'DENGE' : 'AVANTAJ · ' + (it.adv === 'away' ? EP.away.name : EP.home.name), col = it.adv === 'away' ? EP.away.ring : it.adv === 'even' ? TH.mut : TH.acc;
+      const q = eOut(win(lt, .9 + i * .2, 1.6 + i * .2)), by = y + ch - (V ? 70 : 92) * U;
+      g.save(); g.globalAlpha *= q; g.font = F(700, 20 * U, 'JetBrains Mono'); g.letterSpacing = 3 * U + 'px'; const lw = g.measureText(lab).width + 40 * U;
+      rrect(x + pad, by, lw, 44 * U, 22 * U); g.fillStyle = hexA(col, .14); g.fill(); g.strokeStyle = hexA(col, .8); g.lineWidth = 1.4 * U; g.stroke();
+      g.fillStyle = col; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText(lab, x + pad + 20 * U, by + 23 * U); g.restore();
+      g.restore(); return;
+    }
     // olasılık çubuğu + sayaç
     const bp = eIO(win(lt, .9 + i * .2, 2.2 + i * .2)), by = y + ch - (V ? 62 : 80) * U, bw = cw - pad * 2 - 130 * U;
     rrect(x + pad, by, bw, 12 * U, 6 * U); g.fillStyle = 'rgba(255,255,255,.08)'; g.fill();
@@ -750,6 +761,183 @@ SC.outro = (c) => {
       maskText(EP.wish || '', W / 2, yb, F(800, fitPx(EP.wish || '', 800, 'Unbounded', (V ? 58 : 50) * U, W * .78), 'Unbounded'), '#FFFFFF', bp2, 'center', 3 * U);
     } }
   maskText('Yorumlara yaz · sıralama bir sonraki bölümde', W / 2, by + bs + (V ? 120 : 92) * U, F(700, (V ? 32 : 28) * U), TH.mut, win(lt, 1.4, 2.3));
+  g.restore();
+};
+
+// ---------- uzun bölüm sahneleri ----------
+const RES_COL = { G: '#7FE0A8', B: '#C5B8E2', M: '#E58AA8' }, RES_TXT = { G: 'G', B: 'B', M: 'M' };
+const teamOf = s => s === 'away' ? EP.away : EP.home;
+const nameOf = s => s === 'away' ? EP.away.name : EP.home.name;
+function header(c, title, sub) {
+  const hx = V ? W / 2 : 120 * U, al = V ? 'center' : 'left', hy = V ? H * .15 : H * .17;
+  maskText(title, hx, hy, F(800, (V ? 52 : 46) * U, 'Unbounded'), '#FFFFFF', win(c.lt, 0, .8), al, 2 * U);
+  if (sub) maskText(sub, hx, hy + (V ? 52 : 46) * U, F(500, 22 * U, 'JetBrains Mono'), TH.mut2, win(c.lt, .3, 1.1), al, 1 * U);
+}
+function hotIdx(list, T, si) { let h = -1; list.forEach((it, i) => { if (it.w && T >= wT(it.s ?? si, it.w)) h = i; }); return h; }
+function badge(x, y, r, team, txt) {
+  const gr = g.createRadialGradient(x - r * .35, y - r * .4, r * .1, x, y, r * 1.1);
+  gr.addColorStop(0, tint(team.c1, .5)); gr.addColorStop(1, shade(team.c1, .7));
+  g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 6.283); g.fill();
+  g.lineWidth = 2.5 * U; g.strokeStyle = hexA(team.ring, .9); g.beginPath(); g.arc(x, y, r * 1.12, 0, 6.283); g.stroke();
+  g.fillStyle = team.c2; g.font = F(800, r * (txt.length <= 2 ? .8 : .58)); g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(txt, x, y + r * .04);
+  g.textBaseline = 'alphabetic';
+}
+SC.form = (c) => {
+  const { lt, a, sc, T } = c, si = sc.seg[0];
+  g.save(); g.globalAlpha = a; header(c, 'TABLO VE FORM', 'UEFA Avrupa Ligi · lig aşaması · son 4 maç');
+  const n = sc.teams.length, cw = V ? 900 * U : 760 * U, ch = V ? 560 * U : 600 * U, gp = 40 * U;
+  const x0 = V ? (W - cw) / 2 : (W - (n * cw + gp)) / 2, y0 = V ? H * .22 : H * .28;
+  const hot = hotIdx(sc.teams, T, si);
+  sc.teams.forEach((t, i) => {
+    const p = eOut(win(lt, .3 + i * .25, 1.2 + i * .25)); if (p <= 0) return;
+    const team = teamOf(t.side), x = V ? x0 : x0 + i * (cw + gp), y = (V ? y0 + i * (ch + gp) : y0) + (1 - p) * 40 * U;
+    g.save(); g.globalAlpha = a * p * (hot >= 0 && hot !== i ? .5 : 1);
+    glass(x, y, cw, ch, 26 * U, 1, hot === i ? team.ring : '#FFFFFF');
+    const pad = 40 * U; g.textAlign = 'left';
+    g.fillStyle = '#FFFFFF'; g.font = F(800, 34 * U, 'Unbounded'); g.fillText(nameOf(t.side), x + pad, y + 70 * U);
+    g.fillStyle = team.ring; g.font = F(900, 120 * U, 'Playfair Display'); g.fillText(String(t.pts), x + pad, y + 210 * U);
+    const pw = g.measureText(String(t.pts)).width;
+    g.fillStyle = TH.mut; g.font = F(700, 24 * U); g.fillText('puan · ' + t.rank + ' sıra', x + pad + pw + 20 * U, y + 200 * U);
+    t.res.forEach(([r, opp, sc2], j) => {
+      const q = eOut(win(lt, 1.0 + i * .25 + j * .12, 1.6 + i * .25 + j * .12)); if (q <= 0) return;
+      const ry = y + (V ? 270 : 290) * U + j * (V ? 66 : 70) * U;
+      g.save(); g.globalAlpha *= q;
+      rrect(x + pad, ry, 52 * U, 52 * U, 12 * U); g.fillStyle = hexA(RES_COL[r], .2); g.fill(); g.strokeStyle = RES_COL[r]; g.lineWidth = 1.5 * U; g.stroke();
+      g.fillStyle = RES_COL[r]; g.font = F(800, 24 * U); g.textAlign = 'center'; g.fillText(RES_TXT[r], x + pad + 26 * U, ry + 35 * U);
+      g.textAlign = 'left'; g.fillStyle = '#FFFFFF'; g.font = F(700, 26 * U); g.fillText(opp, x + pad + 76 * U, ry + 35 * U);
+      g.textAlign = 'right'; g.fillStyle = TH.mut; g.font = F(700, 26 * U, 'JetBrains Mono'); g.fillText(sc2, x + cw - pad, ry + 35 * U);
+      g.restore();
+    });
+    g.restore();
+  });
+  g.restore();
+};
+SC.players = (c) => {
+  const { lt, a, sc, T } = c, si = sc.seg[0];
+  g.save(); g.globalAlpha = a; header(c, 'ŞÖYLE OYNARSA', 'maçın kaderini belirleyebilecek üç isim');
+  const n = sc.items.length, cw = V ? 900 * U : 520 * U, ch = V ? 330 * U : 560 * U, gp = 30 * U;
+  const x0 = V ? (W - cw) / 2 : (W - (n * cw + (n - 1) * gp)) / 2, y0 = V ? H * .21 : H * .28;
+  const hot = hotIdx(sc.items, T, si);
+  sc.items.forEach((it, i) => {
+    const p = eOut(win(lt, .3 + i * .2, 1.2 + i * .2)); if (p <= 0) return;
+    const team = teamOf(it.team), x = V ? x0 : x0 + i * (cw + gp), y = (V ? y0 + i * (ch + gp) : y0) + (1 - p) * 50 * U;
+    const isHot = hot === i, hp = isHot ? eOut(win(T, wT(it.s ?? si, it.w), wT(it.s ?? si, it.w) + .6)) : 0;
+    g.save(); g.globalAlpha = a * p * (hot >= 0 && !isHot ? .5 : 1);
+    glass(x, y, cw, ch, 26 * U, 1, isHot ? team.ring : '#FFFFFF');
+    if (hp > 0) { rrect(x, y, cw, ch, 26 * U); g.strokeStyle = hexA(team.ring, .85 * hp); g.lineWidth = 2.5 * U; g.stroke(); }
+    const pad = 36 * U, br = (V ? 46 : 52) * U;
+    badge(x + pad + br, y + pad + br, br * (1 + .06 * hp), team, it.pos);
+    g.textAlign = 'left'; const tx = x + pad + br * 2 + 28 * U;
+    g.fillStyle = '#FFFFFF'; g.font = F(800, fitPx(it.nm, 800, 'Unbounded', 40 * U, cw - (tx - x) - pad), 'Unbounded'); g.fillText(it.nm, tx, y + pad + br - 2 * U);
+    g.fillStyle = TH.mut2; g.font = F(700, 19 * U, 'JetBrains Mono'); g.letterSpacing = 2 * U + 'px'; g.fillText((nameOf(it.team) + ' · ' + it.role).toLocaleUpperCase('tr-TR'), tx, y + pad + br + 30 * U); g.letterSpacing = '0px';
+    const by = V ? y + 170 * U : y + 230 * U, lh = V ? 0 : 0;
+    const blk = (lab, txt, yy, col) => { g.fillStyle = col; g.font = F(700, 21 * U, 'JetBrains Mono'); g.letterSpacing = 4 * U + 'px'; g.fillText(lab, x + pad, yy); g.letterSpacing = '0px';
+      g.fillStyle = '#FFFFFF'; g.font = F(800, (V ? 30 : 33) * U); wrapText(txt, x + pad, yy + 46 * U, cw - pad * 2, (V ? 38 : 44) * U); };
+    if (V) { blk('EĞER', it.ifc, by, TH.acc2); blk('O ZAMAN', it.then, by + 100 * U, TH.acc); }
+    else { blk('EĞER', it.ifc, by + 10 * U, TH.acc2); blk('O ZAMAN', it.then, by + 170 * U, TH.acc); }
+    g.restore();
+  });
+  g.restore();
+};
+function wrapText(t, x, y, mw, lh) { const ws = t.split(' '); let line = '', yy = y;
+  for (const w of ws) { const tst = line ? line + ' ' + w : w; if (g.measureText(tst).width > mw && line) { g.fillText(line, x, yy); line = w; yy += lh; } else line = tst; }
+  if (line) g.fillText(line, x, yy); }
+SC.atmo = (c) => {
+  const { lt, a, sc, T } = c, wx = sc.wx;
+  g.save(); g.globalAlpha = a; header(c, 'TRİBÜN VE HAVA', wx.src);
+  const cw = V ? 900 * U : 760 * U, ch = V ? 520 * U : 600 * U, gp = 40 * U;
+  const x0 = V ? (W - cw) / 2 : (W - (2 * cw + gp)) / 2, y0 = V ? H * .22 : H * .28;
+  // hava kartı
+  let p = eOut(win(lt, .3, 1.2));
+  if (p > 0) {
+    const x = x0, y = y0 + (1 - p) * 40 * U, pad = 44 * U;
+    g.save(); g.globalAlpha = a * p; glass(x, y, cw, ch, 26 * U, 1);
+    g.fillStyle = TH.mut2; g.font = F(700, 19 * U, 'JetBrains Mono'); g.letterSpacing = 3 * U + 'px'; g.textAlign = 'left'; g.fillText('MAÇ SAATİNDE BATUM', x + pad, y + 64 * U); g.letterSpacing = '0px';
+    // ay ikonu (gece, açık)
+    const mx = x + cw - pad - 60 * U, my = y + 150 * U;
+    g.fillStyle = '#F2ECD8'; g.beginPath(); g.arc(mx, my, 50 * U, 0, 6.283); g.fill();
+    g.fillStyle = 'rgba(14,8,28,1)'; g.beginPath(); g.arc(mx + 22 * U, my - 14 * U, 44 * U, 0, 6.283); g.fill();
+    g.fillStyle = '#FFFFFF'; g.font = F(300, 150 * U, 'Unbounded'); g.fillText(wx.temp, x + pad, y + 250 * U);
+    g.fillStyle = TH.acc; g.font = F(800, 34 * U); g.fillText(wx.sky, x + pad, y + 310 * U);
+    [['YAĞIŞ', wx.rain], ['RÜZGÂR', wx.wind], ['NEM', wx.hum]].forEach(([k, v], j) => {
+      const q = eOut(win(lt, 1.0 + j * .15, 1.6 + j * .15)), cx = x + pad + j * (cw - pad * 2) / 3;
+      g.save(); g.globalAlpha *= q; g.fillStyle = TH.mut2; g.font = F(700, 18 * U, 'JetBrains Mono'); g.letterSpacing = 3 * U + 'px'; g.fillText(k, cx, y + ch - 110 * U); g.letterSpacing = '0px';
+      g.fillStyle = '#FFFFFF'; g.font = F(800, 38 * U); g.fillText(v, cx, y + ch - 60 * U); g.restore();
+    });
+    g.restore();
+  }
+  // tribün kartı
+  p = eOut(win(lt, .55, 1.45));
+  if (p > 0) {
+    const x = V ? x0 : x0 + cw + gp, y = (V ? y0 + ch + gp : y0) + (1 - p) * 40 * U, pad = 44 * U, chh = V ? 420 * U : ch;
+    g.save(); g.globalAlpha = a * p; glass(x, y, cw, chh, 26 * U, 1);
+    g.fillStyle = TH.mut2; g.font = F(700, 19 * U, 'JetBrains Mono'); g.letterSpacing = 3 * U + 'px'; g.textAlign = 'left'; g.fillText('TRİBÜN', x + pad, y + 64 * U); g.letterSpacing = '0px';
+    // stadyum oturma yayı: noktalar soldan sağa dolar (beklenen yoğunluk)
+    const cx = x + cw / 2, cy = y + (V ? 250 : 300) * U, R0 = (V ? 150 : 170) * U, fill = eIO(win(lt, 1.0, 3.0));
+    for (let row = 0; row < 5; row++) for (let k = 0; k < 34; k++) {
+      const t = k / 33, ang = Math.PI * (1 + t), R = R0 + row * 18 * U, on = t <= fill;
+      g.fillStyle = on ? (t < .8 ? '#EDEDEA' : hexA(EP.away.ring, .9)) : 'rgba(255,255,255,.08)';
+      g.beginPath(); g.arc(cx + Math.cos(ang) * R, cy + Math.sin(ang) * R * .62, 4.2 * U, 0, 6.283); g.fill();
+    }
+    const lines = [['Kâğıt üstünde ev sahibi', EP.home.name], ['Saha', 'tarafsız · Batum'], ['Beklenti', 'Türk taraftar ağırlıklı']];
+    lines.forEach(([k, v], j) => { const yy = y + chh - (V ? 130 : 170) * U + j * 48 * U, q = eOut(win(lt, 1.6 + j * .15, 2.2 + j * .15));
+      g.save(); g.globalAlpha *= q; g.fillStyle = TH.mut; g.font = F(500, 24 * U); g.fillText(k, x + pad, yy);
+      g.fillStyle = '#FFFFFF'; g.font = F(800, 24 * U); g.textAlign = 'right'; g.fillText(v, x + cw - pad, yy); g.textAlign = 'left'; g.restore(); });
+    g.restore();
+  }
+  g.restore();
+};
+SC.balance = (c) => {
+  const { lt, a, sc, T } = c, si = sc.seg[0];
+  g.save(); g.globalAlpha = a; header(c, 'KÂĞIT ÜSTÜNDE', sc.note);
+  const cx = W / 2, y = V ? H * .40 : H * .44, bw = V ? 860 * U : 1200 * U;
+  maskText('FAVORİ', cx, y - (V ? 150 : 150) * U, F(500, 26 * U, 'JetBrains Mono'), TH.mut2, win(lt, .3, 1), 'center', 6 * U);
+  maskText(sc.lean >= .5 ? EP.home.name : EP.away.name, cx, y - 20 * U, F(800, (V ? 84 : 92) * U, 'Unbounded'), '#FFFFFF', win(lt, .5, 1.4), 'center', 2 * U);
+  // eğilim terazisi: sayı yok, yalnızca yön
+  const p = eIO(win(lt, 1.2, 2.6)), ty = y + 90 * U;
+  rrect(cx - bw / 2, ty, bw, 8 * U, 4 * U); g.fillStyle = 'rgba(255,255,255,.12)'; g.fill();
+  const lg = g.createLinearGradient(cx - bw / 2, 0, cx + bw / 2, 0); lg.addColorStop(0, hexA(EP.away.ring, .9)); lg.addColorStop(.5, 'rgba(255,255,255,.4)'); lg.addColorStop(1, hexA(TH.acc, .95));
+  const mx = cx + (lerp(.5, sc.lean, p) - .5) * bw;
+  g.save(); rrect(cx - bw / 2, ty, bw, 8 * U, 4 * U); g.clip(); g.fillStyle = lg; g.globalAlpha *= .9; g.fillRect(Math.min(cx, mx), ty, Math.abs(mx - cx), 8 * U); g.restore();
+  g.fillStyle = '#FFFFFF'; g.beginPath(); g.arc(mx, ty + 4 * U, 16 * U, 0, 6.283); g.fill(); g.strokeStyle = TH.acc; g.lineWidth = 3 * U; g.stroke();
+  g.fillStyle = '#FFFFFF'; g.fillRect(cx - 1, ty - 20 * U, 2, 48 * U);
+  g.font = F(700, 22 * U, 'JetBrains Mono'); g.letterSpacing = 3 * U + 'px'; g.fillStyle = TH.mut;
+  g.textAlign = 'left'; g.fillText(EP.away.short, cx - bw / 2, ty + 60 * U); g.textAlign = 'center'; g.fillText('DENGE', cx, ty + 60 * U); g.textAlign = 'right'; g.fillText(EP.home.short, cx + bw / 2, ty + 60 * U); g.letterSpacing = '0px';
+  const tq = wT(sc.seg[1], 'asıl'), q = win(T, tq - .2, tq + .6);
+  maskText('Asıl soru: kim nasıl oynarsa avantajı alır?', cx, ty + (V ? 200 : 180) * U, F(800, (V ? 40 : 44) * U), TH.acc, q, 'center');
+  g.restore();
+};
+// bölüm başlığı geçişi (sahne girişinin üstünde)
+function chapterCard(sc, T) {
+  if (!sc.chapter) return;
+  const lt = T - sc.t0, a = win(lt, 0, .25) * (1 - win(lt, 1.15, 1.55)); if (a <= 0) return;
+  g.save(); g.globalAlpha = a; g.fillStyle = hexA(TH.bg[2], .92); g.fillRect(0, 0, W, H);
+  const cx = W / 2, cy = H * (V ? .44 : .47);
+  g.fillStyle = TH.acc; g.font = F(900, (V ? 150 : 140) * U, 'Playfair Display'); g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.fillText(sc.chapter.n, cx, cy);
+  const lw = 220 * U * eExpo(win(lt, .1, .7)); g.fillRect(cx - lw / 2, cy + 34 * U, lw, 3 * U);
+  maskText(sc.chapter.t, cx, cy + (V ? 120 : 110) * U, F(800, fitPx(sc.chapter.t, 800, 'Unbounded', (V ? 56 : 60) * U, W * .84), 'Unbounded'), '#FFFFFF', win(lt, .15, .8), 'center', 3 * U);
+  g.restore();
+}
+
+// fragman kapanışı: uzun videoya yönlendirme
+SC.cta = (c) => {
+  const { lt, a, sc, T } = c;
+  g.save(); g.globalAlpha = a;
+  const cx = W / 2, cy = V ? H * .36 : H * .38;
+  // oynat düğmesi: nabız atan halka + üçgen
+  const p = eBack(win(lt, .2, .9)), r = (V ? 120 : 110) * U * cl(p, 0, 1.2), pul = 1 + .06 * Math.sin(T * 4);
+  g.strokeStyle = hexA(TH.acc, .35); g.lineWidth = 2 * U; g.beginPath(); g.arc(cx, cy, r * 1.35 * pul, 0, 6.283); g.stroke();
+  g.fillStyle = hexA(TH.acc, .18); g.beginPath(); g.arc(cx, cy, r, 0, 6.283); g.fill();
+  g.strokeStyle = TH.acc; g.lineWidth = 3 * U; g.stroke();
+  g.fillStyle = '#FFFFFF'; g.beginPath(); g.moveTo(cx - r * .28, cy - r * .38); g.lineTo(cx + r * .42, cy); g.lineTo(cx - r * .28, cy + r * .38); g.closePath(); g.fill();
+  const ty = cy + r * 1.35 + (V ? 120 : 100) * U;
+  maskText(sc.line1, cx, ty, F(800, fitPx(sc.line1, 800, 'Unbounded', (V ? 96 : 90) * U, W * .84), 'Unbounded'), '#FFFFFF', win(lt, .5, 1.3), 'center', 2 * U);
+  maskText(sc.line2, cx, ty + (V ? 80 : 70) * U, F(700, (V ? 34 : 30) * U), TH.acc, win(lt, .8, 1.6), 'center', 5 * U);
+  // aşağı ok: Shorts'taki "ilgili video" bağlantısına
+  const q = win(lt, 1.4, 2.0), ay = ty + (V ? 170 : 140) * U + Math.sin(T * 5) * 8 * U;
+  g.globalAlpha = a * q; g.strokeStyle = '#FFFFFF'; g.lineWidth = 4 * U; g.lineCap = 'round';
+  g.beginPath(); g.moveTo(cx, ay - 30 * U); g.lineTo(cx, ay + 20 * U); g.moveTo(cx - 18 * U, ay + 2 * U); g.lineTo(cx, ay + 20 * U); g.lineTo(cx + 18 * U, ay + 2 * U); g.stroke();
+  g.fillStyle = TH.mut; g.font = F(700, 24 * U, 'JetBrains Mono'); g.letterSpacing = 3 * U + 'px'; g.textAlign = 'center'; g.fillText(sc.hint.toLocaleUpperCase('tr-TR'), cx, ay + 70 * U);
   g.restore();
 };
 
@@ -821,8 +1009,7 @@ function render(T) {
   g.setTransform(S, 0, 0, S, 0, 0);
   g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
   bg(T);
-  const tac = EP.scenes.find(s => s.type === 'tactic');
-  const inTac = tac ? win(T, tac.t0, tac.t0 + .6) * (1 - win(T, tac.t1, tac.t1 + .6)) : 0;
+  const inTac = EP.scenes.filter(s => s.type === 'tactic').reduce((m, tac) => Math.max(m, win(T, tac.t0, tac.t0 + .6) * (1 - win(T, tac.t1, tac.t1 + .6))), 0);
   beams(T, 1 - .35 * inTac);
   bokeh(T, false, 1 - .4 * inTac);
   for (const sc of EP.scenes) {
@@ -832,8 +1019,9 @@ function render(T) {
     const zi = sc.t0 === 0 ? 0 : 1 - eExpo(win(T, sc.t0, sc.t0 + .8)), zo = Math.pow(win(T, sc.t1, sc.t1 + fo), 2);
     const zs = 1 + .07 * zi + .09 * zo;
     g.save(); g.translate(W / 2, H / 2); g.scale(zs, zs); g.translate(-W / 2, -H / 2);
-    SC[sc.type]({ T, lt: T - sc.t0, d: sc.t1 - sc.t0, a, sc });
+    SC[sc.type]({ T, lt: T - sc.t0 - (sc.chapter ? 1.3 : 0), d: sc.t1 - sc.t0, a, sc });
     g.restore();
+    chapterCard(sc, T);
   }
   bokeh(T, true);
   if (!CLEAN) brandBug(T, win(T, .3, 1.2) * (1 - win(T, EP.dur - .8, EP.dur)));
