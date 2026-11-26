@@ -31,7 +31,7 @@ def norm(t):
     return t
 
 CHAIN = ('highpass=f=70,equalizer=f=3200:t=q:w=1.2:g=1.5,deesser=i=0.3,'
-         'acompressor=threshold=-20dB:ratio=2:attack=10:release=150:makeup=1.5,alimiter=limit=0.89')
+         'acompressor=threshold=-20dB:ratio=2:attack=10:release=150:makeup=1.5,alimiter=limit=0.89:level=disabled')
 
 def to48(x, sr, af=CHAIN):
     p = subprocess.run(['ffmpeg', '-v', 'error', '-f', 'f32le', '-ar', str(sr), '-ac', '1', '-i', '-', '-af', f'aresample=48000:resampler=soxr,{af}',
@@ -71,7 +71,7 @@ def main():
             wav = model.generate(norm(text), **kw)
             y = trim(to48(wav.squeeze(0).cpu().numpy(), model.sr)); np.save(cf, y)
             print(f'[{i}] {spk} {len(y) / SR:5.2f} sn ({time.time() - ts:.0f} sn işlem)  {text}', flush=True)
-        if a.tempo != 1.0: y = to48(y, SR, f'atempo={a.tempo},alimiter=limit=0.89')
+        if a.tempo != 1.0: y = to48(y, SR, f'atempo={a.tempo},alimiter=limit=0.89:level=disabled')
         if prev is not None and prev != spk: pcm.append(np.zeros(int(.12 * SR), np.float32)); t += .12
         d = len(y) / SR; tl.append({'t0': round(t, 3), 't1': round(t + d, 3)})
         pcm += [y, np.zeros(int(a.gap * SR), np.float32)]; t += d + a.gap; prev = spk
