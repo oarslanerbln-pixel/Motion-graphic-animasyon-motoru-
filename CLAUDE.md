@@ -39,6 +39,7 @@ Kesinleşen eşleşmeleri bu tabloya işle.
 - **Tarafsız:** hiçbir takımın tarafı tutulmaz; "…'a başarılar" yok. Kapanış: "Skor tahminini yorumlara yaz; maçtan sonra birlikte bakalım."
 - **Karizma:** TRİBÜN o bölümün Türk temsilcisinin taraftar sesi ("Haydi Kara Kartal, tarihinden al gücünü!"); her kulübe eşit doz, kulüpler birbirine karşı konumlanmaz. Banka: `docs/KANAL_FUTBOL.md` §9.
 - **Format:** yatay uzun bölüm + dikey fragman (uzuna yönlendirir). **Analiz:** model arka planda (`futbol/model/`), ekranda/seste yüzde ve oran yok; anlatım "kim nasıl oynarsa avantajı alır".
+- **Müzik yok (kullanıcı kararı, 26.11.2026):** KIRK SEKİZ videolarında müzik yatağı kullanılmaz; yalnızca seslendirme. Yüklenecek ana dosya `_muziksiz.mp4`.
 - Ses: Chatterbox (`futbol/tts_chatterbox.py`), ANALİST = Fahrettin tınısı, TRİBÜN = Fettah tınısı, `--tempo 1.05`. Gemini anahtarı gelirse `tts_gemini.py`.
 Strateji, bölüm şablonu ve üretim hattı: `docs/KANAL_FUTBOL.md` · Motor: `futbol/` (09 Taktik Tahta, video teması `neon`/lila). Taktik sahnesi veri dosyasındaki `beats` listesinden kurulur; kapanış yazısı `EP.wish` (sabit metin yok).
 Python Playwright yok; önizleme/render Node ile: `node futbol/prev.mjs`, `node futbol/render.mjs`.
