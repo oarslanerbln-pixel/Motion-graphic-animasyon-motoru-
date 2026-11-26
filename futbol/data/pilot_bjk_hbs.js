@@ -14,35 +14,38 @@ window.EP = {
   rate: 5.6, gap: 0.32, lead: 0.7, tail: 2.2,   // hece/sn — TTS gelince _tl.js gerçek zamanları yazar
 
   segs: [
-    { spk: 'T', text: 'Beşiktaş yarın sahada. Ama ev sahibi olduğu hâlde İstanbul\'da değil, Batum\'da!' },
-    { spk: 'A', text: 'Tarafsız saha, yirmi bin kişilik stat ve biletlerin büyük kısmı tükenmiş durumda.' },
-    { spk: 'A', text: 'Plan net: Murillo ve Rıdvan kanatlardan bindirme, Orkun ile sabırlı pas, top kaybında beş saniye pres.' },
-    { spk: 'T', text: 'Üç senaryo var. Erken gol gelirse maç tamamen bizim kontrolümüzde.' },
-    { spk: 'T', text: 'Peki senin skor tahminin ne? Yorumlara yaz, Tahmin Ligi başlıyor!' },
+    { spk: 'T', text: 'Bu akşam Batum\'da, Beşiktaş Avrupa\'da kritik bir sınava çıkıyor.' },
+    { spk: 'A', text: 'Kâğıt üstünde ev sahibi Beşiktaş. Ama maç tarafsız sahada, yirmi bin kişilik bir statta oynanacak.' },
+    { spk: 'T', text: 'Biletlerin büyük bölümü tükendi; tribünün siyah beyaz olması hiç sürpriz olmaz.' },
+    { spk: 'A', text: 'Önce rakibin gözünden bakalım. Hapoel için en net şans, Beşiktaş\'ın top kayıplarından doğacak hızlı geçişler.' },
+    { spk: 'A', text: 'Bu yüzden plan net: Murillo ve Rıdvan kanatları genişletecek, Orkun oyunu sabırla kuracak.' },
+    { spk: 'A', text: 'Top kaybedildiği an ilk beş saniye kritik. Anında pres, rakibe nefes aldırmamak.' },
+    { spk: 'T', text: 'Ve bitiricilik: Trossard içeri kat ettiğinde, Vlahović ceza sahasında hazır bekliyor olacak.' },
+    { spk: 'T', text: 'Üç senaryo var. Erken gol gelirse, maç tamamen Beşiktaş\'ın kontrolüne geçer.' },
+    { spk: 'A', text: 'İlk yarı golsüz biterse, sabır ve duran toplar belirleyici olur.' },
+    { spk: 'T', text: 'Skor tahminini yorumlara yaz. Beşiktaş\'a şimdiden başarılar!' },
   ],
 
-  // Sahneler segmentlere bağlı: seg:[ilk, son]. Sahne, ilk segmentten ~0,35 sn önce başlar.
   scenes: [
     { type: 'intro', seg: [0, 0] },
-    { type: 'card',  seg: [1, 1],
+    { type: 'card',  seg: [1, 2],
       tiles: [
         { k: 'TARİH',    v: '26 Kasım', s: 'Perşembe' },
-        { k: 'SAAT',     v: '20:45', s: 'TSİ · [DOĞRULA]' },
+        { k: 'SAAT',     v: '20:45', s: 'TSİ' },
         { k: 'STAT',     v: 'Batum', s: 'tarafsız saha · Gürcistan' },
         { k: 'KAPASİTE', v: '≈20.000', s: 'biletler büyük ölçüde tükendi' },
-        { k: 'HAVA',     v: '≈11°C', s: 'Kasım iklim ort. · tahmin T-2' },
+        { k: 'HAVA',     v: '≈11°C', s: 'Kasım iklim ort. · tahmin değil' },
         { k: 'PUAN',     v: '7', s: 'Beşiktaş · galibiyet = 10' },
       ],
       route: { a: 'İSTANBUL', b: 'BATUM', km: '≈1.050 km', note: 'Sarp sınır kapısı ≈20 km' } },
-    { type: 'tactic', seg: [2, 2], formation: '4-2-3-1',
-      steps: [ { w: 'kanat', label: 'KANAT BİNDİRMESİ' }, { w: 'sabır', label: 'SABIRLI PAS' }, { w: 'pres', label: '5 SANİYE PRES' } ] },
-    { type: 'scen', seg: [3, 3],
+    { type: 'tactic', seg: [3, 6], formation: '4-2-3-1' },
+    { type: 'scen', seg: [7, 8],
       items: [
-        { t: 'Erken gol', d: 'Kontrol bizde, kontra alanı açılır', p: 45, c: '#78F0B4', w: 'erken' },
-        { t: 'İlk yarı 0-0', d: 'Sabır ve duran toplar belirleyici', p: 35, c: '#F4C653' },
+        { t: 'Erken gol', d: 'Kontrol Beşiktaş\'ta, kontra alanı açılır', p: 45, c: '#78F0B4', w: 'erken', s: 7 },
+        { t: 'İlk yarı 0-0', d: 'Sabır ve duran toplar belirleyici', p: 35, c: '#F4C653', w: 'golsüz', s: 8 },
         { t: 'Geriye düşmek', d: 'Açık alan, kontra riski artar', p: 20, c: '#FF5D6C' },
       ] },
-    { type: 'outro', seg: [4, 4] },
+    { type: 'outro', seg: [9, 9] },
   ],
 
   // Taktik tahta: x 0→1 kendi kalesinden rakip kaleye, y 0→1 soldan sağa.
