@@ -6,6 +6,7 @@
 const Q = new URLSearchParams(location.search);
 const W = +Q.get('w') || 1920, H = +Q.get('h') || 1080, S = +(Q.get('s') || 1);
 const V = H > W;                          // dikey mi
+const CLEAN = Q.get('clean') === '1';     // küçük resim için: altyazı, marka ve başlık yok
 const U = Math.min(W, H) / 1080;          // ölçek birimi
 const EP = window.EP;
 
@@ -653,6 +654,7 @@ SC.tactic = (c) => {
     g.fillStyle = tg; g.fillRect(0, 0, W, y1); }
   // başlık + adım etiketi
   const hy = V ? H * .14 : H * .165, hx = V ? W / 2 : 120 * U, al = V ? 'center' : 'left';
+  if (!CLEAN) {
   maskText('OYUN PLANI', hx, hy, F(800, (V ? 50 : 42) * U, 'Unbounded'), '#FFFFFF', win(lt, .2, 1), al, 2 * U);
   maskText(sc.formation, V ? W / 2 : hx + 430 * U, V ? hy + 56 * U : hy, F(300, (V ? 40 : 42) * U, 'Unbounded'), TH.acc, win(lt, .5, 1.3), V ? 'center' : 'left');
   if (EP.lineupNote) maskText(EP.lineupNote, V ? W / 2 : hx, V ? hy + 182 * U : hy + 112 * U, F(500, 19 * U, 'JetBrains Mono'), TH.mut2, win(lt, .9, 1.7) * (1 - dim * 1.5), al, 2 * U);
@@ -666,6 +668,7 @@ SC.tactic = (c) => {
     rrect(bx, by, tw, 46 * U, 23 * U); g.fillStyle = hexA(col, .14); g.fill(); g.strokeStyle = hexA(col, .75); g.lineWidth = 1.4 * U; g.stroke();
     g.fillStyle = col; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText(lab, bx + 22 * U, by + 24 * U);
     g.restore();
+  }
   }
   if (press > 0) {
     const [x, y] = proj(...P(.84, .5)); const tp = cl((T - tP - .3) / 5);
@@ -819,10 +822,10 @@ function render(T) {
     g.restore();
   }
   bokeh(T, true);
-  brandBug(T, win(T, .3, 1.2) * (1 - win(T, EP.dur - .8, EP.dur)));
+  if (!CLEAN) brandBug(T, win(T, .3, 1.2) * (1 - win(T, EP.dur - .8, EP.dur)));
   bloom();
   g.save(); g.globalCompositeOperation = TH.grade[1]; g.fillStyle = TH.grade[0]; g.fillRect(0, 0, W, H); g.restore();
-  subtitles(T);
+  if (!CLEAN) subtitles(T);
   vignette();
   // tane + sona doğru karartma
   g.save(); g.globalAlpha = .035; g.globalCompositeOperation = 'overlay';

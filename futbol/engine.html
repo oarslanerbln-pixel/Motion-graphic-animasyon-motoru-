@@ -7,11 +7,11 @@
 <script>
 // Bölüm verisini URL'den seç: engine.html?ep=pilot_bjk_hbs&w=1080&h=1920&s=1.5&T=12
 (function(){
-  const ep=new URLSearchParams(location.search).get('ep')||'pilot_bjk_hbs';
+  const q=new URLSearchParams(location.search), ep=q.get('ep')||'pilot_bjk_hbs', js=(q.get('js')||'taktik').replace(/[^a-z0-9_]/gi,'');
   const load=(src,opt)=>new Promise(r=>{const s=document.createElement('script');s.src=src;
     s.onload=()=>r(true);s.onerror=()=>{if(!opt)console.error('yüklenemedi: '+src);r(false)};document.head.appendChild(s)});
   // _tl.js = TTS sonrası gerçek zamanlar (opsiyonel). Yoksa hece hızına göre tahmini zaman kullanılır.
-  window.__boot=load('data/'+ep+'.js').then(()=>load('data/'+ep+'_tl.js',true)).then(()=>load('taktik.js'));
+  window.__boot=load('data/'+ep+'.js').then(()=>load('data/'+ep+'_tl.js',true)).then(()=>load(js+'.js'));
 })();
 </script>
 </body></html>

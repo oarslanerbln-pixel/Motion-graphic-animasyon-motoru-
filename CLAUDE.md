@@ -34,6 +34,8 @@ Dosya adı: `<kanal>_<bölüm>_<stil>_<format>.mp4` — müzikli ve müziksiz ik
 
 Kesinleşen eşleşmeleri bu tabloya işle.
 
-## Futbol maç önü kanalı (pilot)
+## Futbol maç önü kanalı: KIRK SEKİZ (48)
+- **Tarafsız:** hiçbir takımın tarafı tutulmaz; "…'a başarılar" yok. Kapanış: "Skor tahminini yorumlara yaz; maçtan sonra birlikte bakalım."
+- Ses: Chatterbox (`futbol/tts_chatterbox.py`), ANALİST = Fahrettin tınısı, TRİBÜN = Fettah tınısı, `--tempo 1.05`. Gemini anahtarı gelirse `tts_gemini.py`.
 Strateji, bölüm şablonu ve üretim hattı: `docs/KANAL_FUTBOL.md` · Motor: `futbol/` (09 Taktik Tahta — onay bekliyor).
 Python Playwright yok; önizleme/render Node ile: `node futbol/prev.mjs`, `node futbol/render.mjs`.

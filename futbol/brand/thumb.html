@@ -1,0 +1,36 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><style>html,body{margin:0}</style></head><body>
+<canvas id="c" width="1280" height="720"></canvas>
+<script>
+// YouTube küçük resmi 1280×720: ?img=&l1=&l2=&l3=&acc=
+const Q = new URLSearchParams(location.search), W = 1280, H = 720, g = document.getElementById('c').getContext('2d');
+const ACC = Q.get('acc') || '#C9A2FF';
+const LAT = 'U+0000-00FF,U+0131,U+2000-206F', LEX = 'U+0100-02BA,U+1E00-1E9F';
+let css = ''; for (const [fam, dir, w] of [['Unbounded','unbounded',800],['Unbounded','unbounded',300],['Manrope','manrope',800],['Manrope','manrope',700]])
+  for (const [sub, r] of [['latin', LAT], ['latin-ext', LEX]]) css += `@font-face{font-family:'${fam}';font-weight:${w};src:url(../../fonts/fontsource-${dir}/files/${dir}-${sub}-${w}-normal.woff2);unicode-range:${r}}`;
+const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+const S = 'AaZz09·İıŞşĞğÜÖÇ×';
+const img = new Image(); img.src = Q.get('img');
+Promise.all([new Promise(r => img.onload = r), ...['800 40px Unbounded','300 40px Unbounded','800 40px Manrope','700 40px Manrope'].map(f => document.fonts.load(f, S))]).then(() => {
+  // arka plan: kare biraz sağa kaydırılmış, solda okunurluk için koyulaşma
+  const sc = Math.max(W / img.width, H / img.height) * 1.12;
+  g.drawImage(img, W - img.width * sc + 60, (H - img.height * sc) / 2, img.width * sc, img.height * sc);
+  let gr = g.createLinearGradient(0, 0, W * .75, 0);
+  gr.addColorStop(0, 'rgba(8,4,18,.96)'); gr.addColorStop(.55, 'rgba(8,4,18,.75)'); gr.addColorStop(1, 'rgba(8,4,18,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  gr = g.createLinearGradient(0, H * .6, 0, H); gr.addColorStop(0, 'rgba(8,4,18,0)'); gr.addColorStop(1, 'rgba(8,4,18,.85)');
+  g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  // rozet: 48 halkası
+  g.strokeStyle = ACC; g.lineWidth = 3; g.beginPath(); g.arc(92, 92, 34, 0, 6.283); g.stroke();
+  g.fillStyle = '#F5F0FF'; g.font = '300 30px Unbounded'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('48', 92, 94);
+  g.textAlign = 'left'; g.font = '700 22px Manrope'; g.letterSpacing = '5px'; g.fillStyle = '#F5F0FF'; g.fillText('KIRK SEKİZ', 142, 94);
+  // başlık
+  g.letterSpacing = '0px'; g.textBaseline = 'alphabetic';
+  const fit = (t, w, max, fam) => { let s = max; g.font = `${w} ${s}px ${fam}`; while (g.measureText(t).width > 760 && s > 40) { s -= 2; g.font = `${w} ${s}px ${fam}`; } return s; };
+  const l1 = Q.get('l1') || '', l2 = Q.get('l2') || '', l3 = Q.get('l3') || '';
+  let s1 = fit(l1, 800, 150, 'Unbounded'); g.fillStyle = '#FFFFFF'; g.shadowColor = 'rgba(0,0,0,.5)'; g.shadowBlur = 20; g.fillText(l1, 64, 360);
+  let s2 = fit(l2, 800, 110, 'Unbounded'); g.fillStyle = ACC; g.fillText(l2, 64, 360 + s2 * 1.1); g.shadowBlur = 0;
+  g.font = '800 30px Manrope'; g.letterSpacing = '3px'; g.fillStyle = '#F5F0FF'; g.fillText(l3, 64, 640);
+  g.fillStyle = ACC; g.fillRect(64, 600, 120, 5);
+  window.DONE = document.getElementById('c').toDataURL('image/jpeg', .92);
+});
+</script></body></html>

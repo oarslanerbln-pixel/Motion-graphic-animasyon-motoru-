@@ -2,7 +2,7 @@
 
 **Durum:** Pilot aşaması · 25 Kasım 2026
 **Kapsam:** Türk takımlarının Şampiyonlar Ligi / Avrupa Ligi (/Konferans Ligi) maçları + A Milli Takım
-**Çalışma adı:** `MAÇ ÖNÜ` (kesin değil, aşağıdaki alternatiflere bak)
+**Kanal adı:** `KIRK SEKİZ` (48) — maçtan 48 saat önce. Logo paleti: Fildişi `#F4EFE6` + Lacivert `#14213D` + altın `#8C6416` (sembol seçimi sürüyor)
 
 ---
 
@@ -12,7 +12,7 @@
 
 - **Kitle:** 16–30 yaş, maçı izleyecek ama 40 dakikalık stüdyo programı izlemeyecek taraftar.
 - **Fark:** TV programlarındaki "konuşan kafa" yerine **premium motion graphic**: gece stadı, ışıklı taktik tahta, sese senkron altyazı. Türkçe YouTube'da bu kalitede maç önü içeriği çok az.
-- **Ton:** Tarafsız ama tutkulu. Her bölümde ilgili takımın tarafını tutarız (GS bölümünde GS'li, FB bölümünde FB'li), ama rakip takım taraftarlarını küçümsemeyiz. Üç büyük takım kitlesini aynı kanalda tutmanın tek yolu bu.
+- **Ton: tamamen tarafsız (kullanıcı kararı, 26.11.2026).** Hiçbir takımın tarafı tutulmaz: "bizim", "…'a başarılar" gibi ifadeler kullanılmaz. Analiz iki takıma da eşit mesafede yapılır. Kapanış her bölümde aynı: "Skor tahminini yorumlara yaz; maçtan sonra birlikte bakalım." Heyecan oyundan ve senaryolardan gelir, taraftarlıktan değil.
 - **Çift sunucu formatı** (Gemini TTS en fazla 2 konuşmacıyı destekliyor, bu formata çok uygun):
   - **ANALİST** (ses: Charon): sakin, sayılarla konuşur, taktik anlatır.
   - **TRİBÜN** (ses: Puck): enerjik, esprili, taraftarın sesi, soruyu o sorar.

@@ -7,14 +7,14 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { ROOT, FMT, serve, openEngine, args, chromium } from './lib.mjs';
 
-const a = args({ ep: 'pilot_bjk_hbs', fmt: 'v', times: '', s: '1', theme: 'gece', out: path.join(ROOT, 'out', 'prev') });
+const a = args({ ep: 'pilot_bjk_hbs', fmt: 'v', times: '', s: '1', theme: 'gece', js: 'taktik', clean: '', out: path.join(ROOT, 'out', 'prev') });
 const [w, h] = FMT[a.fmt];
 const key = `${a.ep}_${a.theme}_${a.fmt}`;
 fs.mkdirSync(a.out, { recursive: true });
 for (const f of fs.readdirSync(a.out)) if (f.startsWith(`${key}_`)) fs.unlinkSync(path.join(a.out, f));
 const srv = await serve();
 const browser = await chromium.launch();
-const { pg, info, logs } = await openEngine(browser, srv.base, { ep: a.ep, w, h, s: a.s, theme: a.theme });
+const { pg, info, logs } = await openEngine(browser, srv.base, { ep: a.ep, w, h, s: a.s, theme: a.theme, js: a.js, clean: a.clean });
 console.log(JSON.stringify(info));
 if (info.fontsMissing.length) console.error('UYARI eksik font:', info.fontsMissing);
 let ts = a.times ? a.times.split(',').map(Number) : info.scenes.flatMap(([, t0, t1]) => [t0 + (t1 - t0) * .35, t0 + (t1 - t0) * .8].map(x => +x.toFixed(2)));

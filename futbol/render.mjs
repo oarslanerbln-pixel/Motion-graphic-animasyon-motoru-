@@ -6,7 +6,7 @@ import path from 'node:path';
 import { spawn, execFileSync } from 'node:child_process';
 import { ROOT, FMT, serve, openEngine, args, chromium } from './lib.mjs';
 
-const a = args({ ep: 'pilot_bjk_hbs', fmt: 'v', s: '2', workers: '2', audio: '', name: '', crf: '15', theme: 'gece', kanal: 'maconu', sharp: '0.45', preset: 'medium' });
+const a = args({ ep: 'pilot_bjk_hbs', fmt: 'v', s: '2', workers: '2', audio: '', name: '', crf: '15', theme: 'gece', js: 'taktik', kanal: 'maconu', sharp: '0.45', preset: 'medium' });
 const [w, h] = FMT[a.fmt], fps = 30, N = +a.workers;
 const outDir = path.join(ROOT, 'out'); fs.mkdirSync(outDir, { recursive: true });
 // Kit adlandırması: <kanal>_<bölüm>_<stil>_<format>
@@ -14,7 +14,7 @@ const name = a.name || `${a.kanal}_${a.ep}_taktik-${a.theme}_${w}x${h}`;
 const srv = await serve();
 const browser = await chromium.launch();
 const t0 = Date.now();
-const first = await openEngine(browser, srv.base, { ep: a.ep, w, h, s: a.s, theme: a.theme });
+const first = await openEngine(browser, srv.base, { ep: a.ep, w, h, s: a.s, theme: a.theme, js: a.js });
 const total = Math.ceil(first.info.dur * fps);
 console.log(`${name}: ${total} kare, ${first.info.dur.toFixed(2)} sn, ${N} worker`);
 
@@ -35,7 +35,7 @@ async function worker(k, eng) {
   return part;
 }
 const engines = [first];
-for (let k = 1; k < N; k++) engines.push(await openEngine(browser, srv.base, { ep: a.ep, w, h, s: a.s, theme: a.theme }));
+for (let k = 1; k < N; k++) engines.push(await openEngine(browser, srv.base, { ep: a.ep, w, h, s: a.s, theme: a.theme, js: a.js }));
 const parts = await Promise.all(engines.map((e, k) => worker(k, e)));
 await browser.close(); srv.close();
 const list = path.join(outDir, `${name}.txt`);

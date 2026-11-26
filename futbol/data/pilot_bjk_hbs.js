@@ -3,8 +3,10 @@
 // [DOĞRULA] işaretli bilgiler yayından önce resmî kaynaktan (UEFA/kulüp) teyit edilmeli.
 window.EP = {
   id: 'pilot_bjk_hbs',
-  brand: 'MAÇ ÖNÜ',                 // kanal adı — henüz kesin değil
+  brand: 'KIRK SEKİZ',   // kanal adı: KIRK SEKİZ (48) — maçtan 48 saat önce
   kicker: 'UEFA AVRUPA LİGİ · 5. HAFTA',
+  infoLine: '26 KASIM · 20:45 TSİ · BATUM',
+  wish: 'MAÇTAN SONRA BİRLİKTE BAKALIM', wishWord: 'birlikte',   // kanal tarafsız: takım tarafı tutulmaz
   home: { name: 'BEŞİKTAŞ', short: 'BJK', c1: '#F4F4F2', c2: '#0B0B0C', ring: '#FFFFFF' },
   away: { name: 'HAPOEL BEER SHEVA', lines: ['HAPOEL', 'BEER SHEVA'], short: 'HBS', c1: '#D9252F', c2: '#FFFFFF', ring: '#FF6B73' },
   spk: {
@@ -23,7 +25,7 @@ window.EP = {
     { spk: 'T', text: 'Ve bitiricilik: Trossard içeri kat ettiğinde, Vlahović ceza sahasında hazır bekliyor olacak.' },
     { spk: 'T', text: 'Üç senaryo var. Erken gol gelirse, maç tamamen Beşiktaş\'ın kontrolüne geçer.' },
     { spk: 'A', text: 'İlk yarı golsüz biterse, sabır ve duran toplar belirleyici olur.' },
-    { spk: 'T', text: 'Skor tahminini yorumlara yaz. Beşiktaş\'a şimdiden başarılar!' },
+    { spk: 'T', text: 'Skor tahminini yorumlara yaz; maçtan sonra birlikte bakalım.' },
   ],
 
   scenes: [
@@ -38,7 +40,14 @@ window.EP = {
         { k: 'PUAN',     v: '7', s: 'Beşiktaş · galibiyet = 10' },
       ],
       route: { a: 'İSTANBUL', b: 'BATUM', km: '≈1.050 km', note: 'Sarp sınır kapısı ≈20 km' } },
-    { type: 'tactic', seg: [3, 6], formation: '4-2-3-1' },
+    { type: 'tactic', seg: [3, 6], formation: '4-2-3-1',
+      beats: [
+        { k: 'rakip', s: 3, w: 'rakib', w2: 'hızlı', label: 'RAKİBİN GÖZÜNDEN' },
+        { k: 'kanat', s: 4, w: 'kanat', camSeg: true, label: '1 · KANAT BİNDİRMESİ' },
+        { k: 'kur',   s: 4, w: 'orkun', focus: 'ORKUN', label: '2 · SABIRLI OYUN KURMA' },
+        { k: 'pres',  s: 5, w: 'pres', camSeg: true, label: '3 · 5 SANİYE PRES' },
+        { k: 'bitir', s: 6, w: 'trossard', camSeg: true, cutter: 'TROSSARD', finisher: 'FV', cross: 'kat', arrive: 'hazır', label: '4 · BİTİRİCİLİK' },
+      ] },
     { type: 'scen', seg: [7, 8],
       items: [
         { t: 'Erken gol', d: 'Kontrol Beşiktaş\'ta, kontra alanı açılır', p: 45, c: '#78F0B4', w: 'erken', s: 7 },
