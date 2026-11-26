@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>%TITLE%</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&amp;family=Manrope:wght@500;700&amp;family=Instrument+Serif:ital@1&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#F4A35B}a:hover{color:#C77A35}
+.L{position:absolute;inset:0}
+.dawn{background:%DAWN%}
+.day{background:%DAY%;animation:day 10s linear infinite}
+.dusk{background:%DUSK%;animation:dusk 10s linear infinite}
+.night{background:%NIGHT%;animation:night 10s linear infinite}
+@keyframes day{0%,6%{opacity:0}14%,26%{opacity:1}34%,100%{opacity:0}}
+@keyframes dusk{0%,26%{opacity:0}33%,38%{opacity:1}48%,100%{opacity:0}}
+@keyframes night{0%,38%{opacity:0}48%,97%{opacity:1}100%{opacity:1}}
+.cam{transform-box:view-box;transform-origin:0 0;animation:cam 10s infinite}
+@keyframes cam{0%{transform:%CAM0%;animation-timing-function:cubic-bezier(.3,0,.2,1)}30%{transform:%CAM1%;animation-timing-function:linear}66%{transform:%CAM2%;animation-timing-function:cubic-bezier(.7,0,.2,1)}95%,100%{transform:%CAMEND%}}
+.dof{animation:dof 10s linear infinite}
+@keyframes dof{0%,80%{filter:blur(0)}93%,100%{filter:blur(2.4px)}}
+.b{transform-box:fill-box;transform-origin:50% 100%;animation-duration:10s;animation-iteration-count:infinite;animation-timing-function:cubic-bezier(.2,.8,.3,1)}
+.ns{fill:#161B45;opacity:0;animation:ns 10s linear infinite}
+@keyframes ns{0%{fill:#FFB37A;opacity:.14}10%{fill:#FFB37A;opacity:0}26%{fill:#FF8A5B;opacity:0}35%{fill:#E0705A;opacity:.24}46%{fill:#161B45;opacity:.6}100%{fill:#161B45;opacity:.64}}
+.shd{animation:shd 10s linear infinite}
+@keyframes shd{0%,14%{opacity:0}24%{opacity:1}34%{opacity:.6}44%,100%{opacity:0}}
+.shd2{transform-box:fill-box;transform-origin:0 100%;animation:shd2 10s linear infinite}
+@keyframes shd2{0%,20%{transform:skewX(-6deg) scale(.8,1)}38%,100%{transform:skewX(8deg) scale(1.25,1)}}
+.wd{fill:rgba(70,60,110,.28)}
+.w{opacity:0;animation-duration:10s;animation-iteration-count:infinite;animation-timing-function:linear}
+.wl45{animation-name:wl45}.wl52{animation-name:wl52}.wl60{animation-name:wl60}
+@keyframes wl45{0%{opacity:0}1%,44%{opacity:1}45%,100%{opacity:0}}
+@keyframes wl52{0%{opacity:0}1%,51%{opacity:1}52%,100%{opacity:0}}
+@keyframes wl60{0%{opacity:0}1%,59%{opacity:1}60%,100%{opacity:0}}
+.tv{fill:#A9D4FF !important}
+.shopw{fill:#A7C9DC;animation:shopw 10s linear infinite}
+@keyframes shopw{0%,38%{fill:#A7C9DC}46%,100%{fill:#FFE1A1}}
+.tank{fill:#A8746A;animation:tank 10s linear infinite}.tank2{fill:#C9958A;animation:tank2 10s linear infinite}
+@keyframes tank{0%,30%{fill:#A8746A}46%,100%{fill:#3C3150}}
+@keyframes tank2{0%,30%{fill:#C9958A}46%,100%{fill:#4A3E60}}
+.beacon{animation:beacon 1.6s steps(1,end) infinite}
+@keyframes beacon{0%{opacity:1}50%{opacity:.15}}
+.lampc{fill:#6B5A70;animation:lampc 10s linear infinite}
+@keyframes lampc{0%,40%{fill:#6B5A70}44%,100%{fill:#FFE7A8}}
+.lg,.pool,.hl,.tl{opacity:0;animation:lights 10s linear infinite}
+@keyframes lights{0%,40%{opacity:0}46%,100%{opacity:1}}
+.tr{transform-box:fill-box;transform-origin:50% 100%;animation:sway 3.2s ease-in-out infinite alternate}
+@keyframes sway{0%{transform:rotate(-2.5deg)}100%{transform:rotate(2.5deg)}}
+%KF%
+.sun{animation:sun 10s linear infinite}
+@keyframes sun{0%{transform:translate(-60px,140px)}20%{transform:translate(0,-10px)}40%,100%{transform:translate(120px,260px)}}
+.sunc{animation:sunc 10s linear infinite}
+@keyframes sunc{0%{fill:#FF9F6E}20%{fill:#FFE6A0}38%,100%{fill:#FF6F4E}}
+.moon{animation:moon 10s cubic-bezier(.2,.8,.3,1) infinite}
+@keyframes moon{0%,42%{transform:translateY(90px);opacity:0}62%,100%{transform:translateY(0);opacity:1}}
+.stars{animation:stars 10s linear infinite}
+@keyframes stars{0%,42%{opacity:0}56%,100%{opacity:1}}
+.tw{animation:tw 2.4s ease-in-out infinite alternate}
+@keyframes tw{0%{opacity:.2}100%{opacity:1}}
+.cloud{animation:cloud 10s linear infinite}
+@keyframes cloud{0%{transform:translateX(-30px)}100%{transform:translateX(60px)}}
+.cloudc{animation:cloudc 10s linear infinite}
+%CLOUDKF%
+.birds{animation:birds 10s linear infinite}
+@keyframes birds{0%{transform:translate(-80px,30px);opacity:0}4%{opacity:1}28%{transform:translate(%BIRDX%px,-50px);opacity:1}30%,100%{opacity:0;transform:translate(%BIRDX%px,-50px)}}
+.flap{animation:flap .5s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+@keyframes flap{0%{transform:scaleY(1)}100%{transform:scaleY(-.6)}}
+.nsc{opacity:0;animation:nsc 10s linear infinite}
+.nsc *{fill:#161B45 !important;stroke:#161B45 !important;fill-opacity:1 !important;stroke-opacity:1 !important}
+@keyframes nsc{0%,26%{opacity:0}35%{opacity:.14}46%,100%{opacity:.5}}
+.bob{animation:bob .45s ease-in-out infinite alternate}
+@keyframes bob{0%{transform:translateY(0)}100%{transform:translateY(-1.3px)}}
+.legL,.legR{transform-box:fill-box;transform-origin:50% 0;animation:legs .45s ease-in-out infinite alternate}
+.legR{animation-direction:alternate-reverse}
+@keyframes legs{0%{transform:rotate(20deg)}100%{transform:rotate(-20deg)}}
+.wag{transform-box:fill-box;transform-origin:100% 100%;animation:wagk .2s ease-in-out infinite alternate}
+@keyframes wagk{0%{transform:rotate(-25deg)}100%{transform:rotate(25deg)}}
+.balloon{transform-box:fill-box;transform-origin:50% 100%;animation:sway 1.6s ease-in-out infinite alternate}
+.smoke{transform-box:fill-box;transform-origin:center;animation:smoke 3.3s ease-out infinite}
+@keyframes smoke{0%{transform:translate(0,0) scale(.5);opacity:0}15%{opacity:.75}100%{transform:translate(9px,-28px) scale(1.9);opacity:0}}
+.ripple{transform-box:fill-box;transform-origin:center;animation:ripple 1.2s ease-out infinite}
+@keyframes ripple{0%{transform:scale(.3);opacity:.9}100%{transform:scale(1.7);opacity:0}}
+.rain{animation-name:rainf;animation-timing-function:linear;animation-iteration-count:infinite}
+@keyframes rainf{0%{transform:translate(0,0)}100%{transform:translate(-%RX%px,%RY%px)}}
+.fall{animation-name:fall;animation-timing-function:linear;animation-iteration-count:infinite}
+@keyframes fall{0%{transform:translateY(0)}100%{transform:translateY(%RY%px)}}
+.drift{animation:drift 3s ease-in-out infinite alternate}
+@keyframes drift{0%{transform:translateX(-9px)}100%{transform:translateX(9px)}}
+.fall2{animation-name:fall2;animation-timing-function:linear;animation-iteration-count:infinite}
+@keyframes fall2{0%{transform:translate(0,0)}100%{transform:translate(140px,%RY%px)}}
+.spin{transform-box:fill-box;transform-origin:center;animation:spin 2s linear infinite}
+@keyframes spin{0%{transform:rotate(0) scaleX(1)}50%{transform:rotate(180deg) scaleX(.3)}100%{transform:rotate(360deg) scaleX(1)}}
+.drip{animation:drip 2s linear infinite}
+@keyframes drip{0%{transform:translateY(0);opacity:0}20%{opacity:.7}100%{transform:translateY(4px);opacity:0}}
+.blinkE{transform-box:fill-box;transform-origin:center;animation:blinkE 10s linear infinite}
+@keyframes blinkE{0%,88%{transform:scaleY(1)}89%{transform:scaleY(.1)}90%,100%{transform:scaleY(1)}}
+.lampp{animation:lampp 3s ease-in-out infinite alternate}
+@keyframes lampp{0%{opacity:.8}100%{opacity:1}}
+.snowtop{fill:#FFFFFF}
+.fount{transform-box:fill-box;transform-origin:50% 100%;animation:fount .6s ease-in-out infinite alternate}
+@keyframes fount{0%{transform:scale(.9,.92)}100%{transform:scale(1.06,1.08)}}
+.flash{opacity:0;background:#EEF3FF;pointer-events:none;animation:flash 10s linear infinite}
+@keyframes flash{0%,56.5%{opacity:0}57%{opacity:%FLASH%}57.8%{opacity:0}58.6%{opacity:calc(%FLASH% * .6)}59.4%,100%{opacity:0}}
+.wx{%WXSTYLE%}
+.heroin{opacity:0;animation:heroin 10s linear infinite}
+@keyframes heroin{0%,42%{opacity:0}47%,100%{opacity:1}}
+.reader{animation:reader 10s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes reader{0%,84%{transform:rotate(0)}88%{transform:rotate(-3deg)}92%,100%{transform:rotate(0)}}
+.tail{transform-box:fill-box;transform-origin:100% 100%;animation:tail 1.8s ease-in-out infinite alternate}
+@keyframes tail{0%{transform:rotate(-12deg)}100%{transform:rotate(14deg)}}
+.steam{animation:steam 2.2s ease-in-out infinite}
+@keyframes steam{0%{transform:translateY(0);opacity:0}30%{opacity:.8}100%{transform:translateY(-1.2px);opacity:0}}
+.hud{animation:hudf 10s linear infinite}
+@keyframes hudf{0%,2%{opacity:0}6%,88%{opacity:1}92%,100%{opacity:0}}
+.clk span{position:absolute;left:0;top:0;opacity:0}
+.k1{animation:k1 10s steps(1,end) infinite}.k2{animation:k2 10s steps(1,end) infinite}.k3{animation:k3 10s steps(1,end) infinite}.k4{animation:k4 10s steps(1,end) infinite}
+@keyframes k1{0%{opacity:1}15%,100%{opacity:0}}
+@keyframes k2{0%{opacity:0}15%{opacity:1}30%,100%{opacity:0}}
+@keyframes k3{0%{opacity:0}30%{opacity:1}44%,100%{opacity:0}}
+@keyframes k4{0%{opacity:0}44%,100%{opacity:1}}
+.bar{transform-origin:0 50%;animation:barp 10s linear infinite}
+@keyframes barp{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}
+.hudc{animation:hudc 10s linear infinite}
+@keyframes hudc{0%,38%{color:#3C2846}46%,100%{color:#FFE7B8}}
+.t1{animation:t1 10s cubic-bezier(.16,1,.3,1) infinite}
+@keyframes t1{0%,2%{opacity:0;transform:translateY(18px)}9%,24%{opacity:1;transform:translateY(0)}30%,100%{opacity:0;transform:translateY(-10px)}}
+.end{animation:endT 10s cubic-bezier(.16,1,.3,1) infinite}
+@keyframes endT{0%,86%{opacity:0;transform:translateY(14px)}93%,100%{opacity:1;transform:translateY(0)}}
+.ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;animation:ph 10s linear infinite}
+@keyframes ph{0%{opacity:0}1%{opacity:1}31.5%{opacity:1}33%,100%{opacity:0}}
+.cap{position:relative;display:inline-block;white-space:nowrap;animation:capc 10s linear infinite}
+@keyframes capc{0%,42%{color:#3C2846;text-shadow:0 0 16px rgba(255,255,255,.7)}48%,100%{color:#FFF0DC;text-shadow:0 2px 14px rgba(10,10,40,.65)}}
+.cap .dim{opacity:.32}
+.cap .lit{position:absolute;inset:0;clip-path:inset(0 100% 0 0);animation:sw 10s linear infinite}
+@keyframes sw{0%,2%{clip-path:inset(0 100% 0 0)}29%,100%{clip-path:inset(0 0 0 0)}}
+.ph2,.ph2 .lit{animation-delay:-6.667s}
+.ph3,.ph3 .lit{animation-delay:-3.333s}
+</style>
+</helmet>
+<div style="position: relative; width: %W%px; height: %H%px; overflow: hidden; background: #F6C7B3; font-family: Manrope, sans-serif; color: #3C2846">
+  <div class="L dawn"></div>
+  <div class="L day"></div>
+  <div class="L dusk"></div>
+  <div class="L night"></div>
+
+  <svg class="L" width="%W%" height="%H%" viewBox="0 0 %W% %H%" aria-hidden="true">
+    <g class="sun" style="%SUNDISP%"><circle cx="%SUNX%" cy="%SUNY%" r="70" fill="#FFE6A0" fill-opacity=".25"></circle><circle class="sunc" cx="%SUNX%" cy="%SUNY%" r="40"></circle></g>
+    <g class="moon"><circle cx="%MOONX%" cy="%MOONY%" r="60" fill="#FFF3D6" fill-opacity=".08"></circle><circle cx="%MOONX%" cy="%MOONY%" r="26" fill="#FFF3D6"></circle><circle cx="%MOONX2%" cy="%MOONY2%" r="23" fill="#1C2257"></circle></g>
+    <g class="stars" fill="#FFF3D6">%STARS%</g>
+    <g class="cloud">%CLOUDS%</g>
+    <g class="birds" fill="none" stroke="#3C2846" stroke-width="1.6" stroke-linecap="round">%BIRDS%</g>
+  </svg>
+
+  <svg class="L dof" width="%W%" height="%H%" viewBox="0 0 %W% %H%" aria-hidden="true">
+    <defs>
+      <linearGradient id="ao" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A1838" stop-opacity="0"></stop><stop offset=".72" stop-color="#2A1838" stop-opacity="0"></stop><stop offset="1" stop-color="#2A1838" stop-opacity=".22"></stop></linearGradient>
+      <radialGradient id="pool"><stop offset="0" stop-color="#FFD98A" stop-opacity=".75"></stop><stop offset="1" stop-color="#FFD98A" stop-opacity="0"></stop></radialGradient>
+      <radialGradient id="halo"><stop offset="0" stop-color="#FFE7A8" stop-opacity=".9"></stop><stop offset="1" stop-color="#FFE7A8" stop-opacity="0"></stop></radialGradient>
+      <linearGradient id="streak" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE7A8" stop-opacity=".7"></stop><stop offset="1" stop-color="#FFE7A8" stop-opacity="0"></stop></linearGradient>
+      <radialGradient id="beam"><stop offset="0" stop-color="#FFF1C2" stop-opacity=".85"></stop><stop offset="1" stop-color="#FFF1C2" stop-opacity="0"></stop></radialGradient>
+      <clipPath id="gclip"><polygon points="%GROUNDCLIP%"></polygon></clipPath>
+    </defs>
+    <g class="cam">
+      %GROUND%
+      <g class="shd" clip-path="url(#gclip)"><g class="shd2" fill="%SHCOL%" fill-opacity=".2">%SHADOWS%</g></g>
+      <g class="pool">%LAMPGLOW%</g>
+      <g class="pool">%REFL%</g>
+      <g clip-path="url(#gclip)">%CARS%</g>
+      %ITEMS%
+    </g>
+  </svg>
+
+  <svg class="L" width="%W%" height="%H%" viewBox="0 0 %W% %H%" aria-hidden="true">
+    <defs>
+      <linearGradient id="room" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7B267"></stop><stop offset="1" stop-color="#E07A5F"></stop></linearGradient>
+      <radialGradient id="lampglow"><stop offset="0" stop-color="#FFF4C8" stop-opacity=".95"></stop><stop offset="1" stop-color="#FFF4C8" stop-opacity="0"></stop></radialGradient>
+    </defs>
+    <g class="cam"><g class="heroin">%HERO%</g></g>
+  </svg>
+
+  <svg class="L wx" width="%W%" height="%H%" viewBox="0 0 %W% %H%" aria-hidden="true">%WX%</svg>
+  <div class="L flash"></div>
+
+%UI%
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#FFD36B","options":["#FFD36B","#FF9F6E","#9EE6D0"]},"$preview":{"width":%W%,"height":%H%}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#FFD36B' };
+  }
+}
+</script>
+</body>
+</html>
