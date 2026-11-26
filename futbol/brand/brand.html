@@ -1,56 +1,47 @@
 <!doctype html><html lang="tr"><head><meta charset="utf-8"><style>html,body{margin:0;background:transparent}</style></head><body>
 <canvas id="c"></canvas>
 <script>
-// Kanal kimliği üretici: ?kind=icon|banner|watermark&name=TAKTİK GECE&mono=TG&tag=...
-const Q = new URLSearchParams(location.search);
-const kind = Q.get('kind') || 'icon', NAME = Q.get('name') || 'TAKTİK GECE', MONO = Q.get('mono') || 'TG', TAG = Q.get('tag') || '';
-const SZ = { icon: [800, 800], watermark: [300, 300], banner: [2560, 1440] }[kind];
+// KIRK SEKİZ kimliği — "İ Noktası": serif 48 + altın top; yazı logosunda İ'nin noktası top.
+// ?kind=icon|banner|watermark|wordmark
+const Q = new URLSearchParams(location.search), kind = Q.get('kind') || 'icon';
+const SZ = { icon: [800, 800], watermark: [300, 300], banner: [2560, 1440], wordmark: [1600, 400] }[kind];
 const [W, H] = SZ, cv = document.getElementById('c'); cv.width = W; cv.height = H; const g = cv.getContext('2d');
-const LAT = 'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD';
-const LEX = 'U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1E00-1E9F,U+2020,U+20A0-20AB,U+20AD-20C0,U+2C60-2C7F,U+A720-A7FF';
-let css = ''; for (const [fam, dir, w] of [['Unbounded','unbounded',800],['Unbounded','unbounded',300],['Manrope','manrope',700],['JetBrains Mono','jetbrains-mono',500]])
+const BG = '#F4EFE6', INK = '#14213D', GOLD = '#B08A3E', MUT = '#5A6275';
+const LAT = 'U+0000-00FF,U+0131,U+2000-206F', LEX = 'U+0100-02BA,U+1E00-1E9F';
+let css = ''; for (const [fam, dir, w] of [['Playfair Display','playfair-display',900],['Manrope','manrope',800],['Manrope','manrope',700]])
   for (const [sub, r] of [['latin', LAT], ['latin-ext', LEX]]) css += `@font-face{font-family:'${fam}';font-weight:${w};src:url(../../fonts/fontsource-${dir}/files/${dir}-${sub}-${w}-normal.woff2);unicode-range:${r}}`;
 const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
-const ACC = '#C9A2FF', ACC2 = '#7FE0F0';
-function bg(r) {
-  const gr = g.createRadialGradient(W / 2, H * .38, 0, W / 2, H / 2, Math.hypot(W, H) * .6);
-  gr.addColorStop(0, '#2B1652'); gr.addColorStop(.55, '#120A26'); gr.addColorStop(1, '#05030B'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
-  g.save(); g.globalCompositeOperation = 'lighter';
-  for (const [sx, sd] of [[-.05 * W, 1], [1.05 * W, -1]]) {
-    const sy = -.08 * H, ang = Math.atan2(H * .7 - sy, W / 2 - sx), L = Math.hypot(W, H) * 1.4;
-    for (const [hw, al] of [[.2, .04], [.1, .06], [.04, .08]]) {
-      const lg = g.createLinearGradient(sx, sy, sx + Math.cos(ang) * L * .7, sy + Math.sin(ang) * L * .7);
-      lg.addColorStop(0, `rgba(196,170,255,${al})`); lg.addColorStop(1, 'rgba(196,170,255,0)'); g.fillStyle = lg;
-      g.beginPath(); g.moveTo(sx, sy); g.lineTo(sx + Math.cos(ang - hw) * L, sy + Math.sin(ang - hw) * L); g.lineTo(sx + Math.cos(ang + hw) * L, sy + Math.sin(ang + hw) * L); g.fill();
-    }
-  }
-  g.restore();
+function mono(cx, cy, s, ink, gold) {   // serif 48 + top (s = 48'in yazı boyu)
+  g.save(); g.fillStyle = ink; g.font = `900 ${s}px 'Playfair Display'`; g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.letterSpacing = `${-s * .035}px`;
+  const m = g.measureText('48'), capH = m.actualBoundingBoxAscent, r = s * .085;
+  // grup (48 + top) sınır kutusuna göre optik ortalama
+  const dx0 = m.width / 2 + s * .03, dy0 = -capH / 2 - s * .02;
+  const L = -m.width / 2, R = dx0 + r, T = dy0 - r, B = capH / 2;
+  const ox = -(L + R) / 2, oy = -(T + B) / 2;
+  g.fillText('48', cx + ox, cy + oy + capH / 2);
+  g.fillStyle = gold; g.beginPath(); g.arc(cx + ox + dx0, cy + oy + dy0, r, 0, 6.283); g.fill(); g.restore();
 }
-function glowStroke(fn, col, w) { g.save(); g.strokeStyle = col; g.lineCap = 'round';
-  for (const [lw, a] of [[w * 4, .12], [w * 2, .25], [w, 1]]) { g.globalAlpha = a; g.lineWidth = lw; g.beginPath(); fn(); g.stroke(); } g.restore(); }
-function emblem(cx, cy, R, withMono = true) {
-  // orta yuvarlak + orta çizgi + top: saha merkezinden ilham
-  glowStroke(() => g.arc(cx, cy, R, 0, 6.2832), 'rgba(226,214,255,.95)', R * .045);
-  glowStroke(() => { g.moveTo(cx, cy - R * 1.32); g.lineTo(cx, cy - R * 1.04); g.moveTo(cx, cy + R * 1.04); g.lineTo(cx, cy + R * 1.32); }, 'rgba(226,214,255,.75)', R * .03);
-  const a = -Math.PI * .22, bx = cx + Math.cos(a) * R, by = cy + Math.sin(a) * R;   // top: halkanın üstünde ışıklı nokta
-  g.save(); g.globalCompositeOperation = 'lighter'; const rg = g.createRadialGradient(bx, by, 0, bx, by, R * .42);
-  rg.addColorStop(0, 'rgba(255,255,255,1)'); rg.addColorStop(.18, 'rgba(201,162,255,.9)'); rg.addColorStop(1, 'rgba(201,162,255,0)');
-  g.fillStyle = rg; g.beginPath(); g.arc(bx, by, R * .42, 0, 6.2832); g.fill(); g.restore();
-  if (withMono) { g.fillStyle = '#FFFFFF'; g.font = `800 ${R * .78}px Unbounded`; g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.shadowColor = 'rgba(201,162,255,.6)'; g.shadowBlur = R * .15; g.fillText(MONO, cx, cy + R * .05); g.shadowBlur = 0; }
+function word(x, y, fs, ink, gold, align = 'left') {  // KIRK SEK + I + Z, İ noktası top
+  g.save(); g.font = `800 ${fs}px Manrope`; const ls = fs * .14; g.letterSpacing = ls + 'px'; g.textBaseline = 'alphabetic'; g.textAlign = 'left';
+  const a = g.measureText('KIRK SEK').width, b = g.measureText('I').width, c = g.measureText('Z').width, tw = a + b + c - ls;
+  const x0 = align === 'center' ? x - tw / 2 : x; g.fillStyle = ink;
+  g.fillText('KIRK SEK', x0, y); g.fillText('I', x0 + a, y); g.fillText('Z', x0 + a + b, y);
+  g.fillStyle = gold; g.beginPath(); g.arc(x0 + a + (b - ls) / 2 - fs * .04, y - fs * .92, fs * .13, 0, 6.283); g.fill(); g.restore(); return tw;
 }
-const SAMPLE = "AaZz09·İıŞşĞğÜÖÇ"; Promise.all(["800 40px Unbounded", "300 40px Unbounded", "700 40px Manrope", "500 40px 'JetBrains Mono'"].map(f => document.fonts.load(f, SAMPLE))).then(() => {
-  if (kind === 'icon') { bg(); emblem(W / 2, H / 2, W * .27); }
-  if (kind === 'watermark') { g.clearRect(0, 0, W, H); g.fillStyle = 'rgba(10,6,22,.55)'; g.beginPath(); g.arc(W / 2, H / 2, W * .48, 0, 6.2832); g.fill(); emblem(W / 2, H / 2, W * .27); }
+const S = 'AaZz09·İıŞşĞğÜÖÇ';
+Promise.all(["900 40px 'Playfair Display'", '800 40px Manrope', '700 40px Manrope'].map(f => document.fonts.load(f, S))).then(() => {
+  if (kind === 'icon') { g.fillStyle = BG; g.fillRect(0, 0, W, H); mono(W / 2, H / 2, 380, INK, GOLD); }
+  if (kind === 'watermark') { g.clearRect(0, 0, W, H); g.fillStyle = 'rgba(244,239,230,.92)'; g.beginPath(); g.arc(W / 2, H / 2, W * .48, 0, 6.283); g.fill(); mono(W / 2, H / 2, 140, INK, GOLD); }
+  if (kind === 'wordmark') { g.clearRect(0, 0, W, H); word(W / 2, H / 2 + 50, 140, INK, GOLD, 'center'); }
   if (kind === 'banner') {
-    bg();
-    // güvenli alan 1546×423 ortada: logo + isim + slogan
-    const cy = H / 2; emblem(W / 2 - 520, cy, 120, true);
-    g.fillStyle = '#FFFFFF'; g.font = '800 128px Unbounded'; g.textAlign = 'left'; { let s2 = 128; while (g.measureText(NAME).width > 1090 && s2 > 60) { s2 -= 2; g.font = `800 ${s2}px Unbounded`; } } g.textBaseline = 'alphabetic';
-    g.shadowColor = 'rgba(201,162,255,.45)'; g.shadowBlur = 30; g.fillText(NAME, W / 2 - 340, cy + 10); g.shadowBlur = 0;
-    g.fillStyle = ACC; g.letterSpacing = '5px'; let fs = 36; g.font = `700 ${fs}px Manrope`; const mw = W / 2 + 760 - (W / 2 - 336); while (g.measureText(TAG).width > mw && fs > 18) { fs--; g.font = `700 ${fs}px Manrope`; } g.fillText(TAG, W / 2 - 336, cy + 80);
-    // ince saha çizgisi şeridi
-    g.strokeStyle = 'rgba(226,214,255,.12)'; g.lineWidth = 2; g.beginPath(); g.moveTo(0, H * .72); g.lineTo(W, H * .72); g.stroke();
+    g.fillStyle = BG; g.fillRect(0, 0, W, H);
+    // ince saha çizgileri: çok soluk, tüm genişlikte (TV ve masaüstünde görünür)
+    g.strokeStyle = 'rgba(20,33,61,.10)'; g.lineWidth = 3; g.strokeRect(160, 260, W - 320, H - 520);
+    // güvenli alan 1546×423: monogram + yazı + slogan
+    mono(W / 2 - 560, H / 2, 210, INK, GOLD);
+    g.fillStyle = INK; g.fillRect(W / 2 - 400, H / 2 - 110, 3, 220);
+    word(W / 2 - 340, H / 2 + 20, 104, INK, GOLD);
+    g.font = '700 30px Manrope'; g.letterSpacing = '9px'; g.fillStyle = MUT; g.fillText('MAÇTAN 48 SAAT ÖNCE · TARAFSIZ TAKTİK ANALİZ', W / 2 - 336, H / 2 + 98);
   }
   window.DONE = cv.toDataURL('image/png');
 });

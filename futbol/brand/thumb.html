@@ -5,12 +5,12 @@
 const Q = new URLSearchParams(location.search), W = 1280, H = 720, g = document.getElementById('c').getContext('2d');
 const ACC = Q.get('acc') || '#C9A2FF';
 const LAT = 'U+0000-00FF,U+0131,U+2000-206F', LEX = 'U+0100-02BA,U+1E00-1E9F';
-let css = ''; for (const [fam, dir, w] of [['Unbounded','unbounded',800],['Unbounded','unbounded',300],['Manrope','manrope',800],['Manrope','manrope',700]])
+let css = ''; for (const [fam, dir, w] of [['Unbounded','unbounded',800],['Unbounded','unbounded',300],['Manrope','manrope',800],['Manrope','manrope',700],['Playfair Display','playfair-display',900]])
   for (const [sub, r] of [['latin', LAT], ['latin-ext', LEX]]) css += `@font-face{font-family:'${fam}';font-weight:${w};src:url(../../fonts/fontsource-${dir}/files/${dir}-${sub}-${w}-normal.woff2);unicode-range:${r}}`;
 const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
 const S = 'AaZz09·İıŞşĞğÜÖÇ×';
 const img = new Image(); img.src = Q.get('img');
-Promise.all([new Promise(r => img.onload = r), ...['800 40px Unbounded','300 40px Unbounded','800 40px Manrope','700 40px Manrope'].map(f => document.fonts.load(f, S))]).then(() => {
+Promise.all([new Promise(r => img.onload = r), ...['800 40px Unbounded','300 40px Unbounded','800 40px Manrope','700 40px Manrope',"900 40px 'Playfair Display'"].map(f => document.fonts.load(f, S))]).then(() => {
   // arka plan: kare biraz sağa kaydırılmış, solda okunurluk için koyulaşma
   const sc = Math.max(W / img.width, H / img.height) * 1.12;
   g.drawImage(img, W - img.width * sc + 60, (H - img.height * sc) / 2, img.width * sc, img.height * sc);
@@ -20,9 +20,16 @@ Promise.all([new Promise(r => img.onload = r), ...['800 40px Unbounded','300 40p
   gr = g.createLinearGradient(0, H * .6, 0, H); gr.addColorStop(0, 'rgba(8,4,18,0)'); gr.addColorStop(1, 'rgba(8,4,18,.85)');
   g.fillStyle = gr; g.fillRect(0, 0, W, H);
   // rozet: 48 halkası
-  g.strokeStyle = ACC; g.lineWidth = 3; g.beginPath(); g.arc(92, 92, 34, 0, 6.283); g.stroke();
-  g.fillStyle = '#F5F0FF'; g.font = '300 30px Unbounded'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('48', 92, 94);
-  g.textAlign = 'left'; g.font = '700 22px Manrope'; g.letterSpacing = '5px'; g.fillStyle = '#F5F0FF'; g.fillText('KIRK SEKİZ', 142, 94);
+  // rozet: KIRK SEKİZ kimliği — serif 48 + altın top, İ noktası top
+  const GOLD = '#D4AF5A';
+  g.fillStyle = '#F5F0FF'; g.font = "900 54px 'Playfair Display'"; g.textAlign = 'left'; g.textBaseline = 'alphabetic'; g.letterSpacing = '-2px';
+  g.fillText('48', 60, 112); const w48 = g.measureText('48').width;
+  g.fillStyle = GOLD; g.beginPath(); g.arc(60 + w48 + 4, 74, 5, 0, 6.283); g.fill();
+  g.fillStyle = 'rgba(245,240,255,.5)'; g.fillRect(60 + w48 + 22, 72, 2, 44);
+  { const fs = 24, ls = fs * .14, x0 = 60 + w48 + 40, y = 104; g.font = `800 ${fs}px Manrope`; g.letterSpacing = ls + 'px'; g.fillStyle = '#F5F0FF';
+    const a1 = g.measureText('KIRK SEK').width, b1 = g.measureText('I').width;
+    g.fillText('KIRK SEK', x0, y); g.fillText('I', x0 + a1, y); g.fillText('Z', x0 + a1 + b1, y);
+    g.fillStyle = GOLD; g.beginPath(); g.arc(x0 + a1 + (b1 - ls) / 2 - fs * .04, y - fs * .92, fs * .13, 0, 6.283); g.fill(); }
   // başlık
   g.letterSpacing = '0px'; g.textBaseline = 'alphabetic';
   const fit = (t, w, max, fam) => { let s = max; g.font = `${w} ${s}px ${fam}`; while (g.measureText(t).width > 760 && s > 40) { s -= 2; g.font = `${w} ${s}px ${fam}`; } return s; };

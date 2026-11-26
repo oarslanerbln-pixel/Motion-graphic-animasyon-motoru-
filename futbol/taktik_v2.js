@@ -225,13 +225,19 @@ function glass(x, y, w, h, r, a = 1, tint = '#FFFFFF') {
   g.restore();
 }
 function brandBug(T, a) {
+  // KIRK SEKİZ yazı logosu: SEKİZ'deki İ'nin noktası altın top (seçilen kimlik: "İ Noktası")
   g.save(); g.globalAlpha = a;
-  const x = V ? W / 2 : 64 * U, y = V ? 130 * U : 70 * U;
-  g.font = F(800, (V ? 30 : 24) * U, 'Unbounded'); g.letterSpacing = 3 * U + 'px'; g.textAlign = V ? 'center' : 'left';
-  g.fillStyle = '#F2F4F7'; g.fillText(EP.brand, x, y);
-  const w = g.measureText(EP.brand).width;
-  const dx = V ? x + w / 2 + 16 * U : x + w + 16 * U;
-  g.fillStyle = TH.acc; g.beginPath(); g.arc(dx, y - 8 * U, 5 * U * (.8 + .2 * Math.sin(T * 3)), 0, 6.283); g.fill();
+  const fs = (V ? 30 : 24) * U, ls = fs * .14, y = V ? 130 * U : 70 * U;
+  g.font = F(800, fs); g.letterSpacing = ls + 'px'; g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+  const b = EP.brand || '', k = b.lastIndexOf('İ'), pre = k >= 0 ? b.slice(0, k) : b, post = k >= 0 ? b.slice(k + 1) : '';
+  const wPre = g.measureText(pre).width, wI = k >= 0 ? g.measureText('I').width : 0, wPost = g.measureText(post).width;
+  const tw = wPre + wI + wPost - ls, x0 = V ? W / 2 - tw / 2 : 64 * U;
+  g.fillStyle = '#F2F4F7'; g.fillText(pre, x0, y);
+  if (k >= 0) {
+    g.fillText('I', x0 + wPre, y); g.fillText(post, x0 + wPre + wI, y);
+    const cx = x0 + wPre + (wI - ls) / 2 - fs * .04, r = fs * .13 * (1 + .06 * Math.sin(T * 2.4));
+    g.fillStyle = '#D4AF5A'; g.beginPath(); g.arc(cx, y - fs * .92, r, 0, 6.283); g.fill();
+  }
   g.restore();
 }
 

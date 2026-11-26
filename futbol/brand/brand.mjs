@@ -1,7 +1,7 @@
 // node futbol/brand/brand.mjs --name "TAKTİK GECE" --mono TG --tag "..." --slug taktikgece
 import fs from 'node:fs'; import path from 'node:path';
 import { ROOT, serve, args, chromium } from '../lib.mjs';
-const a = args({ name: 'TAKTİK GECE', mono: 'TG', tag: 'AVRUPA GECELERİ · MİLLİ TAKIM · MAÇ ÖNCESİ TAKTİK', slug: 'taktikgece', kinds: 'icon,watermark,banner' });
+const a = args({ name: 'TAKTİK GECE', mono: 'TG', tag: 'AVRUPA GECELERİ · MİLLİ TAKIM · MAÇ ÖNCESİ TAKTİK', slug: 'taktikgece', kinds: 'icon,watermark,banner,wordmark' });
 const out = path.join(ROOT, 'out', 'brand'); fs.mkdirSync(out, { recursive: true });
 const srv = await serve(); const b = await chromium.launch(); const pg = await b.newPage();
 for (const kind of a.kinds.split(',')) {
